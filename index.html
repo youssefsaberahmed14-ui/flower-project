@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Youka_Flory | بوكيهات ورد فاخرة</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #c0526a;
+    --rose-light: #f5d9e0;
+    --rose-dark: #8a2a40;
+    --cream: #fdf6f0;
+    --gold: #c9a96e;
+    --green: #4a6741;
+    --green-light: #d4e4c8;
+    --text-dark: #2a1a1e;
+    --text-mid: #6b4a52;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    overflow-x: hidden;
+  }
+
+  /* NAVBAR */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(253,246,240,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(192,82,106,0.15);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-style: italic;
+    color: var(--rose-dark);
+    letter-spacing: 0.05em;
+  }
+
+  .logo span { color: var(--gold); }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+  }
+
+  nav ul a {
+    text-decoration: none;
+    color: var(--text-mid);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  nav ul a:hover { color: var(--rose); }
+
+  .nav-btn {
+    background: var(--rose);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.4rem;
+    border-radius: 50px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .nav-btn:hover { background: var(--rose-dark); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 70px 4rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(192,82,106,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(74,103,65,0.07) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .hero-text { padding: 2rem 0; z-index: 1; }
+
+  .hero-tag {
+    display: inline-block;
+    background: var(--rose-light);
+    color: var(--rose);
+    padding: 0.35rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.8rem;
+    line-height: 1.15;
+    color: var(--text-dark);
+    margin-bottom: 1.2rem;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--rose);
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--text-mid);
+    line-height: 1.8;
+    max-width: 480px;
+    margin-bottom: 2rem;
+  }
+
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--rose);
+    color: white;
+    padding: 0.85rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+
+  .btn-primary:hover { background: var(--rose-dark); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(192,82,106,0.3); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--rose);
+    padding: 0.85rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    border: 2px solid var(--rose);
+    transition: all 0.2s;
+    display: inline-block;
+  }
+
+  .btn-outline:hover { background: var(--rose-light); }
+
+  .hero-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    padding: 3rem 0;
+  }
+
+  .bouquet-showcase {
+    position: relative;
+    width: 380px;
+    height: 480px;
+  }
+
+  .showcase-circle {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px; height: 320px;
+    background: linear-gradient(135deg, var(--rose-light) 0%, #fde8d0 100%);
+    border-radius: 50%;
+  }
+
+  .flower-svg {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -52%);
+    width: 300px;
+    animation: float 4s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(-50%, -52%) rotate(-3deg); }
+    50% { transform: translate(-50%, -58%) rotate(3deg); }
+  }
+
+  .badge-card {
+    position: absolute;
+    background: white;
+    border-radius: 16px;
+    padding: 0.75rem 1.1rem;
+    box-shadow: 0 8px 24px rgba(42,26,30,0.12);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .badge-card .icon { font-size: 1.2rem; }
+
+  .badge-card.top-right { top: 20px; right: -10px; color: var(--rose-dark); }
+  .badge-card.bottom-left { bottom: 60px; left: -20px; color: var(--green); }
+
+  /* STATS BAR */
+  .stats-bar {
+    background: var(--rose-dark);
+    padding: 1.5rem 4rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .stat {
+    text-align: center;
+    color: white;
+  }
+
+  .stat strong {
+    display: block;
+    font-size: 2rem;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+  }
+
+  .stat span {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+
+  /* SECTION STYLE */
+  section { padding: 5rem 4rem; }
+  .section-label {
+    display: inline-block;
+    background: var(--green-light);
+    color: var(--green);
+    padding: 0.35rem 1rem;
+    border-radius: 50px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.06em;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    color: var(--text-dark);
+    margin-bottom: 0.6rem;
+  }
+  .section-sub {
+    color: var(--text-mid);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 550px;
+  }
+
+  /* PRODUCTS */
+  .products { background: white; }
+
+  .products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .tab {
+    padding: 0.5rem 1.2rem;
+    border-radius: 50px;
+    border: 1.5px solid rgba(192,82,106,0.3);
+    background: transparent;
+    color: var(--text-mid);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab.active, .tab:hover {
+    background: var(--rose);
+    color: white;
+    border-color: var(--rose);
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .product-card {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(42,26,30,0.08);
+    transition: transform 0.25s, box-shadow 0.25s;
+    background: var(--cream);
+    position: relative;
+  }
+
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(192,82,106,0.18);
+  }
+
+  .product-badge {
+    position: absolute;
+    top: 14px; right: 14px;
+    background: var(--rose);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 2;
+  }
+
+  .product-img {
+    width: 100%;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    position: relative;
+  }
+
+  .product-img-bg-pink { background: linear-gradient(160deg, #fde0e8 0%, #f5c5d2 100%); }
+  .product-img-bg-red  { background: linear-gradient(160deg, #ffe0dc 0%, #ffc5bb 100%); }
+  .product-img-bg-purple { background: linear-gradient(160deg, #ede0fd 0%, #d9c5f5 100%); }
+  .product-img-bg-yellow { background: linear-gradient(160deg, #fdf5d0 0%, #f5e5a0 100%); }
+  .product-img-bg-white { background: linear-gradient(160deg, #f0f0ee 0%, #e0e0de 100%); }
+  .product-img-bg-mixed { background: linear-gradient(160deg, #fde8f5 0%, #d8eee0 100%); }
+
+  .product-info { padding: 1.2rem; }
+  .product-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.3rem;
+  }
+  .product-desc {
+    font-size: 0.85rem;
+    color: var(--text-mid);
+    margin-bottom: 0.9rem;
+    line-height: 1.5;
+  }
+  .product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .product-price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--rose);
+  }
+  .product-price span {
+    font-size: 0.8rem;
+    color: var(--text-mid);
+    font-weight: 400;
+  }
+  .add-btn {
+    background: var(--rose);
+    color: white;
+    border: none;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .add-btn:hover { background: var(--rose-dark); transform: scale(1.1); }
+
+  /* OCCASIONS */
+  .occasions { background: var(--cream); }
+  .occasions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.2rem;
+    margin-top: 3rem;
+  }
+  .occasion-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    border: 1px solid rgba(42,26,30,0.07);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .occasion-card:hover {
+    border-color: var(--rose);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(192,82,106,0.15);
+  }
+  .occasion-icon { font-size: 2.8rem; margin-bottom: 0.8rem; display: block; }
+  .occasion-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.4rem;
+  }
+  .occasion-desc { font-size: 0.82rem; color: var(--text-mid); }
+
+  /* TESTIMONIALS */
+  .testimonials { background: var(--rose-dark); }
+  .testimonials .section-title { color: white; }
+  .testimonials .section-sub { color: rgba(255,255,255,0.75); }
+  .testimonials .section-label { background: rgba(255,255,255,0.15); color: white; }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .testimonial-card {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 1.8rem;
+  }
+
+  .stars { color: var(--gold); font-size: 1rem; margin-bottom: 0.8rem; letter-spacing: 0.1em; }
+  .testimonial-text {
+    color: rgba(255,255,255,0.9);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
+    font-style: italic;
+  }
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .author-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: white;
+    font-size: 0.9rem;
+  }
+  .author-name { color: white; font-weight: 600; font-size: 0.9rem; }
+  .author-loc { color: rgba(255,255,255,0.6); font-size: 0.8rem; }
+
+  /* ORDER SECTION */
+  .order-section {
+    background: linear-gradient(135deg, var(--rose-light) 0%, #fde8d0 50%, var(--green-light) 100%);
+    text-align: center;
+    padding: 5rem 4rem;
+  }
+  .order-section .section-title { font-size: 2.8rem; }
+  .order-section .section-sub { margin: 0 auto 2rem; }
+
+  /* FOOTER */
+  footer {
+    background: var(--text-dark);
+    color: rgba(255,255,255,0.7);
+    padding: 3rem 4rem 1.5rem;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .footer-brand .logo { color: var(--rose-light); margin-bottom: 0.8rem; display: block; }
+  .footer-brand p { font-size: 0.9rem; line-height: 1.7; }
+
+  .footer-col h4 {
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.5rem; }
+  .footer-col ul li a {
+    text-decoration: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.88rem;
+    transition: color 0.2s;
+  }
+  .footer-col ul li a:hover { color: var(--rose-light); }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+  }
+
+  /* WHATSAPP FLOAT */
+  .whatsapp-float {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 200;
+    background: #25d366;
+    color: white;
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    box-shadow: 0 6px 20px rgba(37,211,102,0.4);
+    text-decoration: none;
+    transition: transform 0.2s;
+    animation: pulse-wa 2s ease-in-out infinite;
+  }
+  .whatsapp-float:hover { transform: scale(1.1); }
+
+  @keyframes pulse-wa {
+    0%, 100% { box-shadow: 0 6px 20px rgba(37,211,102,0.4); }
+    50% { box-shadow: 0 6px 30px rgba(37,211,102,0.7); }
+  }
+
+  /* CART INDICATOR */
+  .cart-icon {
+    position: relative;
+    cursor: pointer;
+    font-size: 1.3rem;
+    color: var(--text-mid);
+  }
+  .cart-badge {
+    position: absolute;
+    top: -8px; right: -8px;
+    background: var(--rose);
+    color: white;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+
+  /* SCROLL ANIMATIONS */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; padding: 90px 1.5rem 2rem; }
+    .hero-visual { display: none; }
+    .hero h1 { font-size: 2.4rem; }
+    nav ul { display: none; }
+    .products-grid { grid-template-columns: 1fr 1fr; }
+    .occasions-grid { grid-template-columns: 1fr 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    section { padding: 3rem 1.5rem; }
+    .stats-bar { padding: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+    .products-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Youka<span>_</span>Flory</div>
+  <ul>
+    <li><a href="#products">منتجاتنا</a></li>
+    <li><a href="#occasions">المناسبات</a></li>
+    <li><a href="#about">من نحن</a></li>
+    <li><a href="#order">اطلب الآن</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:1.2rem">
+    <div class="cart-icon" onclick="openCart()">
+  🛒
+  <div class="cart-badge" id="cartCount">0</div>
+</div>
+    <button class="nav-btn" onclick="scrollToOrder()">اطلب بوكيه</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <span class="hero-tag">✦ توصيل سريع داخل المدينة</span>
+    <h1>أجمل <em>بوكيهات</em><br>الورد بين<br>يديكِ</h1>
+    <p>بوكيهات ورد طازجة ومصممة بعناية لكل مناسبة. من أعياد الميلاد إلى الأعراس — نصنع لكِ لحظة لا تُنسى.</p>
+    <div class="hero-btns">
+      <a href="#products" class="btn-primary">تصفحي الكولكشن 🌹</a>
+      <a href="#order" class="btn-outline">اطلبي الآن</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="bouquet-showcase">
+      <div class="showcase-circle"></div>
+      <svg class="flower-svg" viewBox="0 0 280 360" xmlns="http://www.w3.org/2000/svg">
+        <!-- Stem -->
+        <path d="M140 340 Q130 280 120 240 Q135 200 140 160" stroke="#4a6741" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M140 300 Q110 280 95 255" stroke="#4a6741" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <ellipse cx="88" cy="248" rx="18" ry="11" fill="#4a6741" transform="rotate(-40 88 248)" opacity="0.8"/>
+        <path d="M140 270 Q168 252 178 228" stroke="#4a6741" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <ellipse cx="184" cy="222" rx="18" ry="11" fill="#4a6741" transform="rotate(30 184 222)" opacity="0.8"/>
+        <!-- Wrap paper -->
+        <path d="M100 340 L120 200 L160 200 L180 340 Z" fill="#f5d9e0" opacity="0.7"/>
+        <path d="M100 340 L115 240 L140 225 L165 240 L180 340 Z" fill="#fde8f0" opacity="0.6"/>
+        <path d="M110 340 L125 260 L155 260 L170 340 Z" fill="rgba(192,82,106,0.15)"/>
+        <!-- Big roses -->
+        <g transform="translate(140,115)">
+          <circle cx="0" cy="0" r="32" fill="#c0526a"/>
+          <circle cx="0" cy="0" r="24" fill="#d4687e"/>
+          <circle cx="0" cy="0" r="17" fill="#e07f90"/>
+          <circle cx="0" cy="0" r="10" fill="#eda0ab"/>
+          <circle cx="0" cy="0" r="5" fill="#f5c5cc"/>
+        </g>
+        <g transform="translate(100,145)">
+          <circle cx="0" cy="0" r="26" fill="#b03060"/>
+          <circle cx="0" cy="0" r="19" fill="#c44a78"/>
+          <circle cx="0" cy="0" r="13" fill="#d86890"/>
+          <circle cx="0" cy="0" r="7" fill="#eda0b0"/>
+        </g>
+        <g transform="translate(178,140)">
+          <circle cx="0" cy="0" r="24" fill="#e08098"/>
+          <circle cx="0" cy="0" r="17" fill="#ec9aaf"/>
+          <circle cx="0" cy="0" r="11" fill="#f5b8c6"/>
+          <circle cx="0" cy="0" r="6" fill="#fdd4dc"/>
+        </g>
+        <!-- Side roses -->
+        <g transform="translate(80,170)">
+          <circle cx="0" cy="0" r="20" fill="#c0526a"/>
+          <circle cx="0" cy="0" r="14" fill="#d4687e"/>
+          <circle cx="0" cy="0" r="8" fill="#e8a0af"/>
+        </g>
+        <g transform="translate(195,168)">
+          <circle cx="0" cy="0" r="18" fill="#a83055"/>
+          <circle cx="0" cy="0" r="12" fill="#c0507a"/>
+          <circle cx="0" cy="0" r="7" fill="#da80a0"/>
+        </g>
+        <!-- White accent flowers -->
+        <g transform="translate(125,175)">
+          <circle cx="0" cy="-8" r="6" fill="white" opacity="0.9"/>
+          <circle cx="8" cy="0" r="6" fill="white" opacity="0.9"/>
+          <circle cx="0" cy="8" r="6" fill="white" opacity="0.9"/>
+          <circle cx="-8" cy="0" r="6" fill="white" opacity="0.9"/>
+          <circle cx="0" cy="0" r="4" fill="#fde8c0"/>
+        </g>
+        <g transform="translate(160,178)">
+          <circle cx="0" cy="-7" r="5" fill="white" opacity="0.85"/>
+          <circle cx="7" cy="0" r="5" fill="white" opacity="0.85"/>
+          <circle cx="0" cy="7" r="5" fill="white" opacity="0.85"/>
+          <circle cx="-7" cy="0" r="5" fill="white" opacity="0.85"/>
+          <circle cx="0" cy="0" r="3.5" fill="#f5d090"/>
+        </g>
+        <!-- Baby's breath -->
+        <circle cx="113" cy="130" r="3" fill="white" opacity="0.8"/>
+        <circle cx="165" cy="120" r="3" fill="white" opacity="0.8"/>
+        <circle cx="150" cy="155" r="2.5" fill="white" opacity="0.7"/>
+        <circle cx="108" cy="158" r="2" fill="white" opacity="0.7"/>
+        <circle cx="172" cy="158" r="2.5" fill="white" opacity="0.7"/>
+        <!-- Ribbon -->
+        <path d="M120 215 Q140 205 160 215" stroke="#c9a96e" stroke-width="3" fill="none"/>
+        <path d="M120 215 L110 225 Q115 218 120 215 Z" fill="#c9a96e"/>
+        <path d="M160 215 L170 225 Q165 218 160 215 Z" fill="#c9a96e"/>
+      </svg>
+      <div class="badge-card top-right">
+        <span class="icon">🌹</span>
+        <div>
+          <div style="font-size:0.75rem;opacity:0.6;font-weight:400">ورد طازج</div>
+          يومياً
+        </div>
+      </div>
+      <div class="badge-card bottom-left">
+        <span class="icon">✦</span>
+        <div>
+          <div style="font-size:0.75rem;opacity:0.6;font-weight:400">تصميم مميز</div>
+          حسب الطلب
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><strong>+2000</strong><span>بوكيه تم توصيله</span></div>
+  <div class="stat"><strong>98%</strong><span>عملاء راضون</span></div>
+  <div class="stat"><strong>24h</strong><span>توصيل سريع</span></div>
+  <div class="stat"><strong>100%</strong><span>ورد طازج مضمون</span></div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="products-header">
+    <div>
+      <span class="section-label">كولكشننا</span>
+      <h2 class="section-title">بوكيهات مختارة بعناية</h2>
+      <p class="section-sub">كل بوكيه يُصنع بحب ويُغلف باحترافية عالية</p>
+    </div>
+    <div class="filter-tabs">
+      <button class="tab active" onclick="filterTab(this)">الكل</button>
+      <button class="tab" onclick="filterTab(this)">رومانسي</button>
+      <button class="tab" onclick="filterTab(this)">هدايا</button>
+      <button class="tab" onclick="filterTab(this)">مناسبات</button>
+    </div>
+  </div>
+
+  <div class="products-grid">
+
+    <div class="product-card fade-up">
+      <span class="product-badge">الأكثر طلباً</span>
+      <div class="product-img product-img-bg-pink">🌹</div>
+      <div class="product-info">
+        <div class="product-name">بوكيه الورد الأحمر الكلاسيكي</div>
+        <div class="product-desc">12 وردة حمراء طازجة مع أوراق خضراء وشريطة ذهبية</div>
+        <div class="product-footer">
+          <div class="product-price">٢٥٠ جنيه <span>/ بوكيه</span></div>
+<button class="add-btn" onclick="addToCart(1, this)">+</button>        </div>
+      </div>
+    </div>
+
+    <div class="product-card fade-up">
+      <div class="product-img product-img-bg-red">🌸</div>
+      <div class="product-info">
+        <div class="product-name">بوكيه البيبي روز</div>
+        <div class="product-desc">باقة رومانسية من ورد الـ baby roses بتدرجات الوردي</div>
+        <div class="product-footer">
+          <div class="product-price">٣٢٠ جنيه <span>/ بوكيه</span></div>
+<button class="add-btn" onclick="addToCart(2, this)">+</button>        </div>
+      </div>
+    </div>
+
+    <div class="product-card fade-up">
+      <span class="product-badge" style="background:var(--gold)">جديد</span>
+      <div class="product-img product-img-bg-purple">💜</div>
+      <div class="product-info">
+        <div class="product-name">بوكيه اللافندر الملكي</div>
+        <div class="product-desc">ورد بنفسجي وأبيض مع لافندر طبيعي وعطر مميز</div>
+        <div class="product-footer">
+          <div class="product-price">٣٨٠ جنيه <span>/ بوكيه</span></div>
+<button class="add-btn" onclick="addToCart(3, this)">+</button>        </div>
+      </div>
+    </div>
+
+    <div class="product-card fade-up">
+      <div class="product-img product-img-bg-yellow">🌻</div>
+      <div class="product-info">
+        <div class="product-name">بوكيه السنفلور والورد</div>
+        <div class="product-desc">مزيج مبهج من عباد الشمس وورد أصفر وأبيض</div>
+        <div class="product-footer">
+          <div class="product-price">٢٨٠ جنيه <span>/ بوكيه</span></div>
+<button class="add-btn" onclick="addToCart(4, this)">+</button>        </div>
+      </div>
+    </div>
+
+    <div class="product-card fade-up">
+      <div class="product-img product-img-bg-white">🤍</div>
+      <div class="product-info">
+        <div class="product-name">بوكيه الفرح الأبيض</div>
+        <div class="product-desc">ورد أبيض نقي مثالي للأعراس والمناسبات الرسمية</div>
+        <div class="product-footer">
+          <div class="product-price">٤٥٠ جنيه <span>/ بوكيه</span></div>
+<button class="add-btn" onclick="addToCart(5, this)">+</button>        </div>
+      </div>
+    </div>
+
+    <div class="product-card fade-up">
+      <span class="product-badge" style="background:var(--green)">مميز</span>
+      <div class="product-img product-img-bg-mixed">💐</div>
+      <div class="product-info">
+        <div class="product-name">بوكيه قوس قزح</div>
+        <div class="product-desc">خليط من أجمل الألوان في تصميم احترافي وفاخر</div>
+        <div class="product-footer">
+          <div class="product-price">٥٠٠ جنيه <span>/ بوكيه</span></div>
+<button class="add-btn" onclick="addToCart(6, this)">+</button>        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- OCCASIONS -->
+<section class="occasions" id="about">
+  <div style="text-align:center;margin-bottom:0.5rem">
+    <span class="section-label">لكل لحظة</span>
+    <h2 class="section-title">بوكيه لكل مناسبة</h2>
+    <p class="section-sub" style="margin:0 auto">نصمم بوكيهات تناسب كل موقف وكل إحساس</p>
+  </div>
+  <div class="occasions-grid">
+    <div class="occasion-card fade-up" onclick="sendOccasion('عيد ميلاد')">
+      <span class="occasion-icon">🎂</span>
+      <div class="occasion-name">عيد ميلاد</div>
+      <div class="occasion-desc">اجعل يومها أجمل بوردة مميزة</div>
+    </div>
+    <div class="occasion-card fade-up" onclick="sendOccasion('زفاف')">
+      <span class="occasion-icon">💍</span>
+      <div class="occasion-name">زفاف وخطوبة</div>
+      <div class="occasion-desc">بوكيهات العرائس الأكثر أناقة</div>
+    </div>
+    <div class="occasion-card fade-up" onclick="sendOccasion('تخرج')">
+      <span class="occasion-icon">🎓</span>
+      <div class="occasion-name">حفل تخرج</div>
+      <div class="occasion-desc">احتفلي بنجاحها بأجمل هدية</div>
+    </div>
+    <div class="occasion-card fade-up" onclick="sendOccasion('مولود')">
+      <span class="occasion-icon">👶</span>
+      <div class="occasion-name">مبروك المولود</div>
+      <div class="occasion-desc">بوكيهات ناعمة للمناسبة السعيدة</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <span class="section-label">آراء عملاؤنا</span>
+  <h2 class="section-title">بيحبونا ❤️</h2>
+  <p class="section-sub">أكثر من ٢٠٠٠ عميل سعيد وثقوا فينا</p>
+  <div class="testimonials-grid">
+    <div class="testimonial-card fade-up">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">«البوكيه وصل في الموعد بالظبط وكان أجمل من الصورة! ماما انبسطت جداً يوم عيد ميلادها»</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">سم</div>
+        <div><div class="author-name">سمر محمود</div><div class="author-loc">القاهرة</div></div>
+      </div>
+    </div>
+    <div class="testimonial-card fade-up">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">«طلبت بوكيه للخطوبة وجاء فوق التوقعات! التغليف فاخر جداً والورد طازج لمدة أسبوع كامل»</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">نر</div>
+        <div><div class="author-name">نرمين رضا</div><div class="author-loc">الجيزة</div></div>
+      </div>
+    </div>
+    <div class="testimonial-card fade-up">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">«خدمة ممتازة وبسرعة! عامل التوصيل مؤدب والبوكيه كان رائع جداً. هطلب تاني أكيد»</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">أح</div>
+        <div><div class="author-name">أحمد حسين</div><div class="author-loc">الإسكندرية</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ORDER CTA -->
+<section class="order-section" id="order">
+  <span class="section-label">اطلبي الآن</span>
+  <h2 class="section-title">جاهزة تطلبي؟ 🌹</h2>
+  <p class="section-sub">تواصلي معنا عبر واتساب وهنساعدك تختاري البوكيه المثالي</p>
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+    <a href="https://wa.me/201154371751" class="btn-primary" style="font-size:1.1rem;padding:1rem 2.5rem">
+      💬 اطلبي على واتساب
+    </a>
+    <a href="#products" class="btn-outline" style="font-size:1.1rem;padding:1rem 2.5rem">
+      تصفحي المنتجات
+    </a>
+  </div>
+  <div style="margin-top:2.5rem;display:flex;gap:2rem;justify-content:center;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:0.5rem;color:var(--text-mid);font-size:0.9rem">
+      <span>🚚</span> توصيل داخل ٢٤ ساعة
+    </div>
+    <div style="display:flex;align-items:center;gap:0.5rem;color:var(--text-mid);font-size:0.9rem">
+      <span>🌿</span> ورد طازج مضمون
+    </div>
+    <div style="display:flex;align-items:center;gap:0.5rem;color:var(--text-mid);font-size:0.9rem">
+      <span>🎁</span> تغليف هدية مجاني
+    </div>
+    <div style="display:flex;align-items:center;gap:0.5rem;color:var(--text-mid);font-size:0.9rem">
+      <span>💳</span> كاش أو فوري
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="logo">Youka<span style="color:var(--gold)">_</span>Flory</span>
+      <p>بنصمم بوكيهات ورد فاخرة بأيدي متخصصين عشان نخلي لحظاتك مميزة. ورد طازج — تغليف أنيق — توصيل سريع.</p>
+    </div>
+    <div class="footer-col">
+      <h4>روابط سريعة</h4>
+      <ul>
+        <li><a href="#products">المنتجات</a></li>
+        <li><a href="#occasions">المناسبات</a></li>
+        <li><a href="#order">اطلب الآن</a></li>
+        <li><a href="#">سياسة الاسترجاع</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>تواصلي معنا</h4>
+      <ul>
+        <li><a href="#">واتساب</a></li>
+        <li><a href="#">إنستجرام</a></li>
+        <li><a href="#">فيسبوك</a></li>
+        <li><a href="#">تيك توك</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>مواعيد العمل</h4>
+      <ul>
+        <li><a href="#">السبت – الخميس</a></li>
+        <li><a href="#">٩ ص – ١١ م</a></li>
+        <li><a href="#">الجمعة: ١ م – ١١ م</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2025 Youka_Flory — جميع الحقوق محفوظة</div>
+    <div>صُنع بـ ❤️ لكل محبي الورد</div>
+  </div>
+</footer>
+
+<!-- WhatsApp Float -->
+<a class="whatsapp-float" href="https://wa.me/201000000000" title="تواصل عبر واتساب">📱</a>
+
+<script>
+
+function filterTab(el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function scrollToOrder() {
+  document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+}
+
+function sendOccasion(name) {
+  const card = event.currentTarget;
+  card.style.background = 'var(--rose-light)';
+  card.style.borderColor = 'var(--rose)';
+  setTimeout(() => {
+    card.style.background = '';
+    card.style.borderColor = '';
+  }, 800);
+  document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Scroll animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+/* ✅ إضافة للسلة */
+async function addToCart(productId, btn) {
+  await fetch("http://localhost:3000/cart", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ productId })
+  });
+
+  updateCartCount();
+
+  btn.textContent = "✓";
+  btn.style.background = "#4a6741";
+
+  setTimeout(() => {
+    btn.textContent = "+";
+    btn.style.background = "";
+  }, 1000);
+}
+
+/* ✅ تحديث عداد السلة */
+async function updateCartCount() {
+  const res = await fetch("http://localhost:3000/cart");
+  const data = await res.json();
+
+  document.getElementById("cartCount").textContent = data.length;
+}
+
+/* ✅ أول ما الصفحة تفتح */
+window.onload = updateCartCount;
+function openCart() {
+  window.location.href = "http://localhost:3000/cart-page";
+}
+
+</script>
+</body>
+</html>

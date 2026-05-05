@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Cart</title>
+</head>
+<body>
+  <h1>🧺 سلة المشتريات</h1>
+  <ul id="list"></ul>
+
+  <script>
+    async function loadCart() {
+      const res = await fetch("http://localhost:3000/cart");
+      const data = await res.json();
+
+      document.getElementById("list").innerHTML =
+        data.map(item => `<li>Product ID: ${item.productId}</li>`).join("");
+    }
+
+    loadCart();
+  </script>
+</body>
+</html>
