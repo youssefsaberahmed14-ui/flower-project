@@ -1,23 +1,1134 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>Cart</title>
-</head>
-<body>
-  <h1>🧺 سلة المشتريات</h1>
-  <ul id="list"></ul>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Youka_Flory | سلة التسوق</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #c0526a;
+    --rose-light: #f5d9e0;
+    --rose-dark: #8a2a40;
+    --cream: #fdf6f0;
+    --gold: #c9a96e;
+    --green: #4a6741;
+    --green-light: #d4e4c8;
+    --text-dark: #2a1a1e;
+    --text-mid: #6b4a52;
+    --text-light: #a07880;
+    --border: rgba(42,26,30,0.1);
+  }
 
-  <script>
-    async function loadCart() {
-      const res = await fetch("http://localhost:3000/cart");
-      const data = await res.json();
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-      document.getElementById("list").innerHTML =
-        data.map(item => `<li>Product ID: ${item.productId}</li>`).join("");
-    }
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
 
-    loadCart();
-  </script>
+  /* NAV */
+  nav {
+    background: rgba(253,246,240,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-style: italic;
+    color: var(--rose-dark);
+    text-decoration: none;
+  }
+
+  .logo span { color: var(--gold); }
+
+  .nav-back {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-mid);
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-back:hover { color: var(--rose); }
+
+  /* BREADCRUMB */
+  .breadcrumb {
+    padding: 1rem 2rem;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .breadcrumb a {
+    color: var(--rose);
+    text-decoration: none;
+  }
+
+  /* MAIN LAYOUT */
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--text-dark);
+    padding: 0 2rem 1.5rem;
+  }
+
+  .cart-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 2rem;
+    padding: 0 2rem 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  /* CART ITEMS */
+  .cart-section {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .section-header {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .section-header h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+
+  .count-badge {
+    background: var(--rose-light);
+    color: var(--rose-dark);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 50px;
+  }
+
+  .clear-btn {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 0.82rem;
+    font-family: 'Tajawal', sans-serif;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .clear-btn:hover { color: var(--rose); }
+
+  /* CART ITEM ROW */
+  .cart-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 1rem;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    transition: background 0.15s;
+  }
+
+  .cart-item:last-child { border-bottom: none; }
+  .cart-item:hover { background: var(--cream); }
+
+  .item-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem;
+    flex-shrink: 0;
+  }
+
+  .bg-pink   { background: linear-gradient(135deg,#fde8f0,#f8c8d8); }
+  .bg-red    { background: linear-gradient(135deg,#ffe8e4,#ffcabb); }
+  .bg-purple { background: linear-gradient(135deg,#efe0fd,#ddc5f5); }
+  .bg-yellow { background: linear-gradient(135deg,#fdf8d0,#f5e8a0); }
+  .bg-white  { background: linear-gradient(135deg,#f0f0ee,#e2e2e0); }
+  .bg-mixed  { background: linear-gradient(135deg,#fde8f5,#d8f0e0); }
+
+  .item-details { min-width: 0; }
+
+  .item-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item-sub {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    margin-bottom: 10px;
+  }
+
+  .item-tag {
+    display: inline-block;
+    background: var(--green-light);
+    color: var(--green);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 50px;
+    margin-bottom: 10px;
+  }
+
+  .qty-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .qty-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: white;
+    color: var(--text-dark);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    font-family: 'Tajawal', sans-serif;
+  }
+
+  .qty-btn:hover {
+    border-color: var(--rose);
+    background: var(--rose-light);
+    color: var(--rose-dark);
+  }
+
+  .qty-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .qty-val {
+    font-size: 0.95rem;
+    font-weight: 700;
+    min-width: 20px;
+    text-align: center;
+    color: var(--text-dark);
+  }
+
+  .item-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    min-width: 90px;
+  }
+
+  .item-price {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--rose);
+  }
+
+  .item-unit-price {
+    font-size: 0.75rem;
+    color: var(--text-light);
+  }
+
+  .del-btn {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-family: 'Tajawal', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s;
+  }
+
+  .del-btn:hover {
+    background: #fde0e8;
+    color: var(--rose-dark);
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+
+  .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  .empty-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-sub {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+  }
+
+  .shop-btn {
+    display: inline-block;
+    background: var(--rose);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.2s;
+  }
+
+  .shop-btn:hover { background: var(--rose-dark); }
+
+  /* YOU MAY ALSO LIKE */
+  .suggest-section {
+    margin-top: 1.5rem;
+    background: white;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    padding: 1.2rem 1.5rem;
+  }
+
+  .suggest-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+  }
+
+  .suggest-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  .suggest-card {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .suggest-card:hover {
+    border-color: var(--rose);
+    transform: translateY(-2px);
+  }
+
+  .suggest-img {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+
+  .suggest-info {
+    padding: 0.5rem 0.6rem;
+  }
+
+  .suggest-name {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .suggest-price {
+    font-size: 0.82rem;
+    color: var(--rose);
+    font-weight: 700;
+  }
+
+  .suggest-add {
+    display: block;
+    width: 100%;
+    background: var(--rose-light);
+    color: var(--rose-dark);
+    border: none;
+    padding: 5px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .suggest-add:hover { background: var(--rose); color: white; }
+
+  /* ORDER SUMMARY */
+  .summary-card {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    position: sticky;
+    top: 80px;
+  }
+
+  .summary-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* PROMO */
+  .promo-wrap {
+    margin-bottom: 1.2rem;
+  }
+
+  .promo-label {
+    font-size: 0.82rem;
+    color: var(--text-mid);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  .promo-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .promo-input {
+    flex: 1;
+    height: 38px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 0 12px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.88rem;
+    color: var(--text-dark);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .promo-input:focus {
+    border-color: var(--rose);
+    box-shadow: 0 0 0 3px rgba(192,82,106,0.1);
+  }
+
+  .promo-input.success { border-color: var(--green); }
+  .promo-input.error   { border-color: #e24b4a; }
+
+  .promo-btn {
+    height: 38px;
+    padding: 0 14px;
+    background: var(--rose);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+
+  .promo-btn:hover { background: var(--rose-dark); }
+
+  .promo-msg {
+    font-size: 0.78rem;
+    margin-top: 5px;
+    height: 16px;
+  }
+
+  .promo-msg.ok  { color: var(--green); }
+  .promo-msg.err { color: #e24b4a; }
+
+  /* SUMMARY ROWS */
+  .summary-rows { margin-bottom: 1rem; }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.45rem 0;
+    font-size: 0.88rem;
+    color: var(--text-mid);
+  }
+
+  .summary-row.disc { color: var(--green); font-weight: 600; }
+
+  .summary-row.total {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    border-top: 1.5px solid var(--border);
+    padding-top: 0.8rem;
+    margin-top: 0.3rem;
+  }
+
+  .total-rose { color: var(--rose); }
+
+  /* DELIVERY OPTIONS */
+  .delivery-section {
+    margin-bottom: 1.2rem;
+  }
+
+  .delivery-label {
+    font-size: 0.82rem;
+    color: var(--text-mid);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .delivery-opts {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .delivery-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.6rem 0.8rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.85rem;
+  }
+
+  .delivery-opt:hover { border-color: var(--rose-light); }
+
+  .delivery-opt.selected {
+    border-color: var(--rose);
+    background: var(--rose-light);
+  }
+
+  .delivery-opt input[type="radio"] { accent-color: var(--rose); }
+
+  .opt-name { flex: 1; font-weight: 600; color: var(--text-dark); }
+  .opt-time { font-size: 0.75rem; color: var(--text-light); }
+  .opt-price { font-weight: 700; color: var(--rose); font-size: 0.88rem; }
+
+  .free-tag {
+    background: var(--green-light);
+    color: var(--green);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 50px;
+  }
+
+  /* CHECKOUT BTN */
+  .checkout-btn {
+    width: 100%;
+    height: 50px;
+    background: var(--rose);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .checkout-btn:hover { background: var(--rose-dark); transform: translateY(-1px); }
+  .checkout-btn:disabled { background: #d0b0b8; cursor: default; transform: none; }
+
+  .wa-btn {
+    width: 100%;
+    height: 44px;
+    background: #25d366;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.15s;
+    margin-bottom: 1rem;
+  }
+
+  .wa-btn:hover { background: #1da851; }
+
+  /* TRUST BADGES */
+  .trust-badges {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--text-light);
+  }
+
+  .badge-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--green-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--text-dark);
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.88rem;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 999;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* STEP INDICATOR */
+  .steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 0 2rem 1.5rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .step-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: 2px solid var(--border);
+    background: white;
+    color: var(--text-light);
+  }
+
+  .step.active .step-circle {
+    background: var(--rose);
+    border-color: var(--rose);
+    color: white;
+  }
+
+  .step.done .step-circle {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+    font-size: 0.9rem;
+  }
+
+  .step-label {
+    font-size: 0.72rem;
+    color: var(--text-light);
+    text-align: center;
+  }
+
+  .step.active .step-label { color: var(--rose); font-weight: 600; }
+
+  .step-line {
+    flex: 0.5;
+    height: 2px;
+    background: var(--border);
+    margin-bottom: 18px;
+  }
+
+  @media (max-width: 768px) {
+    .cart-layout { grid-template-columns: 1fr; padding: 0 1rem 3rem; }
+    .suggest-grid { grid-template-columns: repeat(2, 1fr); }
+    .cart-item { grid-template-columns: 64px 1fr auto; }
+    .item-img { width: 64px; height: 64px; font-size: 1.8rem; }
+    .page-title { padding: 0 1rem 1rem; font-size: 1.5rem; }
+    .breadcrumb { padding: 0.8rem 1rem; }
+    .steps { padding: 0 1rem 1.2rem; }
+  }
+</style>
+
+<!-- NAV -->
+<nav>
+  <a href="youka_flory.html" class="nav-back">← رجوع للمتجر</a>
+  <a href="youka_flory.html" class="logo">Youka<span>_</span>Flory</a>
+  <div style="width:100px"></div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="youka_flory.html">الرئيسية</a> ← سلة التسوق
+</div>
+
+<!-- STEPS -->
+<div class="steps">
+  <div class="step done">
+    <div class="step-circle">✓</div>
+    <div class="step-label">اختيار المنتجات</div>
+  </div>
+  <div class="step-line"></div>
+  <div class="step active">
+    <div class="step-circle">2</div>
+    <div class="step-label">السلة</div>
+  </div>
+  <div class="step-line"></div>
+  <div class="step">
+    <div class="step-circle">3</div>
+    <div class="step-label">بيانات التوصيل</div>
+  </div>
+  <div class="step-line"></div>
+  <div class="step">
+    <div class="step-circle">4</div>
+    <div class="step-label">الدفع</div>
+  </div>
+</div>
+
+<!-- TITLE -->
+<h1 class="page-title">سلة التسوق 🛒</h1>
+
+<!-- MAIN LAYOUT -->
+<div class="cart-layout">
+
+  <!-- LEFT: ITEMS -->
+  <div>
+    <div class="cart-section">
+      <div class="section-header">
+        <div style="display:flex;align-items:center;gap:10px">
+          <h2>منتجاتك</h2>
+          <span class="count-badge" id="countBadge">3 منتجات</span>
+        </div>
+        <button class="clear-btn" onclick="clearCart()">حذف الكل</button>
+      </div>
+
+      <div id="cartItems"></div>
+
+      <div id="emptyState" class="empty-state" style="display:none">
+        <div class="empty-icon">🌷</div>
+        <div class="empty-title">سلتك فاضية!</div>
+        <div class="empty-sub">ابدئي التسوق من كولكشننا الجميل</div>
+        <a href="youka_flory.html" class="shop-btn">تصفحي المنتجات 🌹</a>
+      </div>
+    </div>
+
+    <!-- SUGGESTIONS -->
+    <div class="suggest-section" id="suggestSection">
+      <div class="suggest-title">ممكن يعجبك كمان ✨</div>
+      <div class="suggest-grid" id="suggestGrid"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: SUMMARY -->
+  <div>
+    <div class="summary-card">
+      <div class="summary-title">ملخص الطلب</div>
+
+      <!-- PROMO -->
+      <div class="promo-wrap">
+        <div class="promo-label">عندك كود خصم؟</div>
+        <div class="promo-row">
+          <input type="text" class="promo-input" id="promoInput" placeholder="YOUKA15" maxlength="12" />
+          <button class="promo-btn" onclick="applyPromo()">تطبيق</button>
+        </div>
+        <div class="promo-msg" id="promoMsg"></div>
+      </div>
+
+      <!-- DELIVERY OPTIONS -->
+      <div class="delivery-section">
+        <div class="delivery-label">طريقة التوصيل</div>
+        <div class="delivery-opts">
+          <label class="delivery-opt selected" id="opt-standard">
+            <input type="radio" name="delivery" value="standard" checked onchange="selectDelivery(this)" />
+            <div>
+              <div class="opt-name">توصيل عادي</div>
+              <div class="opt-time">خلال 24 ساعة</div>
+            </div>
+            <span id="ship-std-price" class="opt-price"></span>
+          </label>
+          <label class="delivery-opt" id="opt-express">
+            <input type="radio" name="delivery" value="express" onchange="selectDelivery(this)" />
+            <div>
+              <div class="opt-name">توصيل سريع</div>
+              <div class="opt-time">خلال 4 ساعات</div>
+            </div>
+            <span class="opt-price">+30 جنيه</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- SUMMARY ROWS -->
+      <div class="summary-rows">
+        <div class="summary-row"><span>المجموع الفرعي</span><span id="subtotalVal">—</span></div>
+        <div class="summary-row"><span>التوصيل</span><span id="shippingVal">—</span></div>
+        <div class="summary-row disc" id="discRow" style="display:none">
+          <span>خصم الكود (15%)</span><span id="discVal">—</span>
+        </div>
+        <div class="summary-row total">
+          <span>الإجمالي</span>
+          <span class="total-rose" id="totalVal">—</span>
+        </div>
+      </div>
+
+      <button class="checkout-btn" id="checkoutBtn" onclick="goCheckout()">
+        إتمام الطلب ←
+      </button>
+
+      <button class="wa-btn" onclick="orderWhatsapp()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.556 4.118 1.528 5.847L0 24l6.335-1.508A11.946 11.946 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.882 0-3.65-.488-5.187-1.342l-.372-.221-3.762.896.929-3.669-.243-.387A9.951 9.951 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        اطلبي على واتساب
+      </button>
+
+      <div class="trust-badges">
+        <div class="badge"><div class="badge-icon">🚚</div>توصيل سريع</div>
+        <div class="badge"><div class="badge-icon">🌿</div>ورد طازج</div>
+        <div class="badge"><div class="badge-icon">🎁</div>تغليف مجاني</div>
+        <div class="badge"><div class="badge-icon">💳</div>كاش أو فوري</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const PROMO = 'YOUKA15';
+const DISC = 0.15;
+const SHIP_STD = 50;
+const SHIP_EXP = 80;
+const FREE_ABOVE = 500;
+
+const suggestions = [
+  {id:4, name:'بوكيه السنفلور والورد', sub:'مزيج مبهج من عباد الشمس وورد أصفر وأبيض', price:280, icon:'🌻', bg:'bg-yellow', tag:null},
+  {id:5, name:'بوكيه الفرح الأبيض', sub:'ورد أبيض نقي مثالي للأعراس والمناسبات الرسمية', price:450, icon:'🤍', bg:'bg-white', tag:null},
+  {id:6, name:'بوكيه قوس قزح', sub:'خليط من أجمل الألوان في تصميم احترافي وفاخر', price:500, icon:'💐', bg:'bg-mixed', tag:'مميز'},
+];
+
+let cart = [];
+let promoApplied = false;
+let deliveryMode = 'standard';
+
+async function fetchCart() {
+  try {
+    const res = await fetch('/cart');
+    if (!res.ok) throw new Error('غير قادر على تحميل السلة');
+    const data = await res.json();
+    cart = data.reduce((acc, item) => {
+      const existing = acc.find(i => i.id === item.id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        acc.push({ ...item, qty: 1 });
+      }
+      return acc;
+    }, []);
+  } catch (err) {
+    cart = [];
+    console.error(err);
+  }
+}
+
+function renderCart() {
+  const el = document.getElementById('cartItems');
+  const empty = document.getElementById('emptyState');
+  const suggest = document.getElementById('suggestSection');
+  const checkout = document.getElementById('checkoutBtn');
+
+  if (!cart.length) {
+    el.innerHTML = '';
+    empty.style.display = 'block';
+    suggest.style.display = 'none';
+    checkout.disabled = true;
+    document.getElementById('countBadge').textContent = '0 منتجات';
+    updateSummary();
+    return;
+  }
+
+  empty.style.display = 'none';
+  suggest.style.display = 'block';
+  checkout.disabled = false;
+
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  document.getElementById('countBadge').textContent = count + ' منتج';
+
+  el.innerHTML = cart.map(item => `
+    <div class="cart-item" id="row-${item.id}">
+      <div class="item-img ${item.bg}">${item.icon}</div>
+      <div class="item-details">
+        ${item.tag ? `<div class="item-tag">${item.tag}</div>` : ''}
+        <div class="item-name">${item.name}</div>
+        <div class="item-sub">${item.sub}</div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(${item.id}, -1)" ${item.qty <= 1 ? 'disabled' : ''}>−</button>
+          <span class="qty-val">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+        </div>
+      </div>
+      <div class="item-right">
+        <div class="item-price">${(item.price * item.qty).toLocaleString('ar-EG')} جنيه</div>
+        <div class="item-unit-price">${item.price.toLocaleString('ar-EG')} جنيه / قطعة</div>
+        <button class="del-btn" onclick="removeItem(${item.id})">✕ حذف</button>
+      </div>
+    </div>
+  `).join('');
+
+  updateSummary();
+}
+
+function renderSuggestions() {
+  const cartIds = cart.map(i => i.id);
+  const available = suggestions.filter(s => !cartIds.includes(s.id));
+  const el = document.getElementById('suggestGrid');
+  el.innerHTML = available.map(s => `
+    <div class="suggest-card">
+      <div class="suggest-img ${s.bg}">${s.icon}</div>
+      <div class="suggest-info">
+        <div class="suggest-name">${s.name}</div>
+        <div class="suggest-price">${s.price.toLocaleString('ar-EG')} جنيه</div>
+      </div>
+      <button class="suggest-add" onclick="addSuggestion(${s.id})">+ أضيفي للسلة</button>
+    </div>
+  `).join('');
+}
+
+function updateSummary() {
+  if (!cart.length) {
+    ['subtotalVal', 'shippingVal', 'totalVal'].forEach(id => {
+      document.getElementById(id).textContent = '—';
+    });
+    return;
+  }
+
+  const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const extra = deliveryMode === 'express' ? 30 : 0;
+  const ship = sub >= FREE_ABOVE ? extra : (deliveryMode === 'express' ? SHIP_EXP : SHIP_STD);
+  const disc = promoApplied ? Math.round(sub * DISC) : 0;
+  const total = sub + ship - disc;
+
+  document.getElementById('subtotalVal').textContent = sub.toLocaleString('ar-EG') + ' جنيه';
+
+  const shipEl = document.getElementById('shippingVal');
+  const stdEl = document.getElementById('ship-std-price');
+
+  if (sub >= FREE_ABOVE) {
+    shipEl.innerHTML = deliveryMode === 'express'
+      ? `+30 جنيه`
+      : `<span style="color:var(--green);font-weight:700">مجانية 🎉</span>`;
+    if (stdEl) stdEl.innerHTML = `<span class="free-tag">مجاني</span>`;
+  } else {
+    shipEl.textContent = ship.toLocaleString('ar-EG') + ' جنيه';
+    if (stdEl) stdEl.textContent = SHIP_STD + ' جنيه';
+  }
+
+  const discRow = document.getElementById('discRow');
+  if (promoApplied && disc > 0) {
+    discRow.style.display = 'flex';
+    document.getElementById('discVal').textContent = '− ' + disc.toLocaleString('ar-EG') + ' جنيه';
+  } else {
+    discRow.style.display = 'none';
+  }
+
+  document.getElementById('totalVal').textContent = total.toLocaleString('ar-EG') + ' جنيه';
+}
+
+async function changeQty(id, delta) {
+  if (delta > 0) {
+    await fetch('/cart', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productId: id })
+    });
+  } else {
+    await fetch(`/cart/${id}`, { method: 'DELETE' });
+  }
+
+  await fetchCart();
+  renderCart();
+  renderSuggestions();
+}
+
+async function removeItem(id) {
+  const row = document.getElementById('row-' + id);
+  if (row) {
+    row.style.opacity = '0';
+    row.style.transform = 'translateX(20px)';
+    row.style.transition = 'all 0.25s';
+    setTimeout(async () => {
+      await fetch(`/cart/${id}?all=true`, { method: 'DELETE' });
+      await fetchCart();
+      renderCart();
+      renderSuggestions();
+    }, 250);
+  }
+  showToast('تم حذف المنتج من السلة');
+}
+
+async function clearCart() {
+  if (!confirm('هتحذفي كل المنتجات من السلة؟')) return;
+  await fetch('/cart', { method: 'DELETE' });
+  await fetchCart();
+  renderCart();
+  renderSuggestions();
+  showToast('تم تفريغ السلة');
+}
+
+async function addSuggestion(id) {
+  const s = suggestions.find(x => x.id === id);
+  if (!s) return;
+  await fetch('/cart', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ productId: id })
+  });
+  await fetchCart();
+  renderCart();
+  renderSuggestions();
+  showToast('تم إضافة ' + s.name + ' للسلة ✓');
+}
+
+function applyPromo() {
+  const val = document.getElementById('promoInput').value.trim().toUpperCase();
+  const inp = document.getElementById('promoInput');
+  const msg = document.getElementById('promoMsg');
+
+  if (val === PROMO) {
+    promoApplied = true;
+    inp.classList.remove('error');
+    inp.classList.add('success');
+    msg.className = 'promo-msg ok';
+    msg.textContent = 'تم تطبيق خصم 15% ✓';
+    updateSummary();
+    showToast('تم تطبيق كود الخصم بنجاح ✓');
+  } else {
+    promoApplied = false;
+    inp.classList.remove('success');
+    inp.classList.add('error');
+    msg.className = 'promo-msg err';
+    msg.textContent = 'الكود غير صحيح، جربي: YOUKA15';
+    updateSummary();
+  }
+}
+
+function selectDelivery(radio) {
+  deliveryMode = radio.value;
+  document.querySelectorAll('.delivery-opt').forEach(el => el.classList.remove('selected'));
+  radio.closest('.delivery-opt').classList.add('selected');
+  updateSummary();
+}
+
+function goCheckout() {
+  showToast('جاري الانتقال لصفحة التوصيل...');
+}
+
+function orderWhatsapp() {
+  const lines = cart.map(i =>
+    `• ${i.name} × ${i.qty} = ${(i.price * i.qty).toLocaleString('ar-EG')} جنيه`
+  ).join('\n');
+  const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const msg = encodeURIComponent(
+    `مرحباً Youka_Flory 🌹\n\nعايزة أطلب:\n${lines}\n\nالإجمالي: ${sub.toLocaleString('ar-EG')} جنيه\n\nشكراً!`
+  );
+  window.open('https://wa.me/201000000000?text=' + msg, '_blank');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+document.getElementById('promoInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') applyPromo();
+});
+
+(async () => {
+  await fetchCart();
+  renderCart();
+  renderSuggestions();
+})();
+</script>
 </body>
-</html>
+</html>ليه البرومو 
