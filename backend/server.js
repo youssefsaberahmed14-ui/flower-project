@@ -20,13 +20,34 @@ const products = [
 let cart = [];
 
 app.post("/cart", (req, res) => {
-  const { productId } = req.body;
+  const { productId, options = {} } = req.body;
   const product = products.find(item => item.id === productId);
   if (!product) {
     return res.status(400).json({ error: 'Invalid product id' });
   }
 
-  cart.push(product);
+  const normalizedOptions = {
+    flowerShape: options.flowerShape || 'دائري',
+    bouquetColor: options.bouquetColor || 'أحمر',
+    wrapColor: options.wrapColor || 'ورقي',
+  };
+
+  const optionsKey = JSON.stringify(normalizedOptions);
+  const existing = cart.find(item => item.productId === productId && item.optionsKey === optionsKey);
+
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({
+      cartId: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      productId,
+      qty: 1,
+      optionsKey,
+      options: normalizedOptions,
+      ...product,
+    });
+  }
+
   res.json(cart);
 });
 
@@ -39,15 +60,15 @@ app.delete("/cart", (req, res) => {
   res.json({ ok: true });
 });
 
-app.delete("/cart/:id", (req, res) => {
-  const id = Number(req.params.id);
+app.delete("/cart/:cartId", (req, res) => {
+  const cartId = req.params.cartId;
   const removeAll = req.query.all === 'true';
-  if (removeAll) {
-    cart = cart.filter(item => item.id !== id);
-  } else {
-    const idx = cart.findIndex(item => item.id === id);
-    if (idx !== -1) {
+  const idx = cart.findIndex(item => item.cartId === cartId);
+  if (idx !== -1) {
+    if (removeAll || cart[idx].qty <= 1) {
       cart.splice(idx, 1);
+    } else {
+      cart[idx].qty -= 1;
     }
   }
   res.json(cart);

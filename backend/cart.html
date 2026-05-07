@@ -893,16 +893,7 @@ async function fetchCart() {
   try {
     const res = await fetch('/cart');
     if (!res.ok) throw new Error('غير قادر على تحميل السلة');
-    const data = await res.json();
-    cart = data.reduce((acc, item) => {
-      const existing = acc.find(i => i.id === item.id);
-      if (existing) {
-        existing.qty += 1;
-      } else {
-        acc.push({ ...item, qty: 1 });
-      }
-      return acc;
-    }, []);
+    cart = await res.json();
   } catch (err) {
     cart = [];
     console.error(err);
@@ -929,26 +920,29 @@ function renderCart() {
   suggest.style.display = 'block';
   checkout.disabled = false;
 
-  const count = cart.reduce((s, i) => s + i.qty, 0);
+  const count = cart.reduce((s, i) => s + (i.qty || 1), 0);
   document.getElementById('countBadge').textContent = count + ' منتج';
 
   el.innerHTML = cart.map(item => `
-    <div class="cart-item" id="row-${item.id}">
+    <div class="cart-item" id="row-${item.cartId}">
       <div class="item-img ${item.bg}">${item.icon}</div>
       <div class="item-details">
         ${item.tag ? `<div class="item-tag">${item.tag}</div>` : ''}
         <div class="item-name">${item.name}</div>
         <div class="item-sub">${item.sub}</div>
+        <div class="item-option">شكل الورد: ${item.options?.flowerShape || 'دائري'}</div>
+        <div class="item-option">لون البوكيه: ${item.options?.bouquetColor || 'أحمر'}</div>
+        <div class="item-option">التغليف: ${item.options?.wrapColor || 'ورقي'}</div>
         <div class="qty-ctrl">
-          <button class="qty-btn" onclick="changeQty(${item.id}, -1)" ${item.qty <= 1 ? 'disabled' : ''}>−</button>
+          <button class="qty-btn" onclick="changeQty('${item.cartId}', -1)" ${item.qty <= 1 ? 'disabled' : ''}>−</button>
           <span class="qty-val">${item.qty}</span>
-          <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+          <button class="qty-btn" onclick="changeQty('${item.cartId}', 1)">+</button>
         </div>
       </div>
       <div class="item-right">
         <div class="item-price">${(item.price * item.qty).toLocaleString('ar-EG')} جنيه</div>
         <div class="item-unit-price">${item.price.toLocaleString('ar-EG')} جنيه / قطعة</div>
-        <button class="del-btn" onclick="removeItem(${item.id})">✕ حذف</button>
+        <button class="del-btn" onclick="removeItem('${item.cartId}')">✕ حذف</button>
       </div>
     </div>
   `).join('');
@@ -957,7 +951,7 @@ function renderCart() {
 }
 
 function renderSuggestions() {
-  const cartIds = cart.map(i => i.id);
+  const cartIds = cart.map(i => i.productId);
   const available = suggestions.filter(s => !cartIds.includes(s.id));
   const el = document.getElementById('suggestGrid');
   el.innerHTML = available.map(s => `
@@ -1013,11 +1007,14 @@ function updateSummary() {
 }
 
 async function changeQty(id, delta) {
+  const item = cart.find(i => i.cartId === id);
+  if (!item) return;
+
   if (delta > 0) {
     await fetch('/cart', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ productId: id })
+      body: JSON.stringify({ productId: item.productId, options: item.options })
     });
   } else {
     await fetch(`/cart/${id}`, { method: 'DELETE' });
@@ -1059,7 +1056,10 @@ async function addSuggestion(id) {
   await fetch('/cart', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ productId: id })
+    body: JSON.stringify({
+      productId: id,
+      options: { flowerShape: 'كلاسيكي', bouquetColor: 'أحمر', wrapColor: 'ورقي' }
+    })
   });
   await fetchCart();
   renderCart();
@@ -1103,13 +1103,13 @@ function goCheckout() {
 
 function orderWhatsapp() {
   const lines = cart.map(i =>
-    `• ${i.name} × ${i.qty} = ${(i.price * i.qty).toLocaleString('ar-EG')} جنيه`
+    `• ${i.name} × ${i.qty} = ${(i.price * i.qty).toLocaleString('ar-EG')} جنيه\n  شكل: ${i.options?.flowerShape || 'دائري'}, لون: ${i.options?.bouquetColor || 'أحمر'}, تغليف: ${i.options?.wrapColor || 'ورقي'}`
   ).join('\n');
   const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const msg = encodeURIComponent(
     `مرحباً Youka_Flory 🌹\n\nعايزة أطلب:\n${lines}\n\nالإجمالي: ${sub.toLocaleString('ar-EG')} جنيه\n\nشكراً!`
   );
-  window.open('https://wa.me/201000000000?text=' + msg, '_blank');
+  window.open('https://wa.me/201154371751?text=' + msg, '_blank');
 }
 
 function showToast(msg) {
@@ -1131,4 +1131,4 @@ document.getElementById('promoInput').addEventListener('keydown', e => {
 })();
 </script>
 </body>
-</html>ليه البرومو 
+</html>

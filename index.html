@@ -613,6 +613,120 @@
     .stats-bar { padding: 1.5rem; flex-wrap: wrap; gap: 1rem; }
     .products-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
   }
+
+  .options-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.2rem;
+    z-index: 9999;
+  }
+
+  .options-modal {
+    position: relative;
+    width: min(520px, 100%);
+    background: white;
+    border-radius: 24px;
+    padding: 1.5rem 1.4rem 1.5rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.16);
+    direction: rtl;
+  }
+
+  .options-modal h3 {
+    margin: 0 0 1rem;
+    font-size: 1.2rem;
+    color: var(--text-dark);
+  }
+
+  .option-group {
+    margin-bottom: 1rem;
+  }
+
+  .option-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: var(--text-mid);
+    font-size: 0.95rem;
+  }
+
+  .option-group select {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 0.95rem 1rem;
+    background: #fff;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    outline: none;
+  }
+
+  .options-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 1.2rem;
+  }
+
+  .options-btn {
+    border: none;
+    border-radius: 14px;
+    padding: 0.95rem 1.3rem;
+    font-family: 'Tajawal', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .options-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .options-btn.confirm {
+    background: var(--rose);
+    color: white;
+  }
+
+  .options-btn.cancel {
+    background: var(--border);
+    color: var(--text-dark);
+  }
+
+  .options-close {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 1.4rem;
+    color: var(--text-dark);
+    cursor: pointer;
+  }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 1.5rem;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(42, 26, 30, 0.95);
+    color: white;
+    padding: 0.85rem 1.25rem;
+    border-radius: 999px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 10000;
+    font-family: 'Tajawal', sans-serif;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 </style>
 </head>
 <body>
@@ -969,6 +1083,35 @@
 <!-- WhatsApp Float -->
 <a class="whatsapp-float" href="https://wa.me/201000000000" title="تواصل عبر واتساب">📱</a>
 
+<div id="optionsOverlay" class="options-overlay" onclick="closeOptionsModal()">
+  <div class="options-modal" onclick="event.stopPropagation()">
+    <button class="options-close" onclick="closeOptionsModal()" aria-label="إغلاق">×</button>
+    <h3>اختاري تفاصيل البوكيه</h3>
+    <div class="option-group">
+      <label for="optionProductName">البوكيه</label>
+      <div id="optionProductName" style="font-weight:700;color:var(--text-dark);margin-bottom:0.9rem">المنتج المختار</div>
+    </div>
+    <div class="option-group">
+      <label for="flowerShapeSelect">شكل الورد</label>
+      <select id="flowerShapeSelect"></select>
+    </div>
+    <div class="option-group">
+      <label for="bouquetColorSelect">لون البوكيه</label>
+      <select id="bouquetColorSelect"></select>
+    </div>
+    <div class="option-group">
+      <label for="wrapColorSelect">لون التغليف</label>
+      <select id="wrapColorSelect"></select>
+    </div>
+    <div class="options-actions">
+      <button class="options-btn cancel" onclick="closeOptionsModal()">إلغاء</button>
+      <button class="options-btn confirm" onclick="confirmAddToCart()">أضيفي للسلة</button>
+    </div>
+  </div>
+</div>
+
+<div id="pageToast" class="toast"></div>
+
 <script>
 
 function filterTab(el) {
@@ -1002,37 +1145,99 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-/* ✅ إضافة للسلة */
-async function addToCart(productId, btn) {
+const bouquetOptions = {
+  flowerShapes: ['دائري', 'طولي', 'مفتوح', 'كلاسيكي'],
+  bouquetColors: ['أحمر', 'زهري', 'أبيض', 'بنفسجي', 'مزيج'],
+  wrapColors: ['ورقي', 'ذهبي', 'وردي', 'أخضر', 'أسود'],
+};
+
+const productCatalog = {
+  1: 'بوكيه الورد الأحمر الكلاسيكي',
+  2: 'بوكيه البيبي روز',
+  3: 'بوكيه اللافندر الملكي',
+  4: 'بوكيه السنفلور والورد',
+  5: 'بوكيه الفرح الأبيض',
+  6: 'بوكيه قوس قزح',
+};
+
+let selectedProductId = null;
+
+function populateOptionSelects() {
+  const flowerShapeSelect = document.getElementById('flowerShapeSelect');
+  const bouquetColorSelect = document.getElementById('bouquetColorSelect');
+  const wrapColorSelect = document.getElementById('wrapColorSelect');
+
+  bouquetOptions.flowerShapes.forEach(shape => {
+    flowerShapeSelect.insertAdjacentHTML('beforeend', `<option value="${shape}">${shape}</option>`);
+  });
+  bouquetOptions.bouquetColors.forEach(color => {
+    bouquetColorSelect.insertAdjacentHTML('beforeend', `<option value="${color}">${color}</option>`);
+  });
+  bouquetOptions.wrapColors.forEach(color => {
+    wrapColorSelect.insertAdjacentHTML('beforeend', `<option value="${color}">${color}</option>`);
+  });
+}
+
+function addToCart(productId, btn) {
+  openProductOptions(productId, btn);
+}
+
+function openProductOptions(productId, btn) {
+  selectedProductId = productId;
+  document.getElementById('optionProductName').textContent = productCatalog[productId] || 'المنتج المختار';
+  document.getElementById('flowerShapeSelect').value = bouquetOptions.flowerShapes[0];
+  document.getElementById('bouquetColorSelect').value = bouquetOptions.bouquetColors[0];
+  document.getElementById('wrapColorSelect').value = bouquetOptions.wrapColors[0];
+  document.getElementById('optionsOverlay').style.display = 'flex';
+  if (btn) btn.blur();
+}
+
+function closeOptionsModal() {
+  selectedProductId = null;
+  document.getElementById('optionsOverlay').style.display = 'none';
+}
+
+async function confirmAddToCart() {
+  if (!selectedProductId) return;
+
+  const options = {
+    flowerShape: document.getElementById('flowerShapeSelect').value,
+    bouquetColor: document.getElementById('bouquetColorSelect').value,
+    wrapColor: document.getElementById('wrapColorSelect').value,
+  };
+
   await fetch("http://localhost:3000/cart", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ productId })
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ productId: selectedProductId, options })
   });
 
   updateCartCount();
+  closeOptionsModal();
+  showToast('تم إضافة البوكيه للسلة مع التفاصيل ✓');
+}
 
-  btn.textContent = "✓";
-  btn.style.background = "#4a6741";
-
-  setTimeout(() => {
-    btn.textContent = "+";
-    btn.style.background = "";
-  }, 1000);
+function showToast(message) {
+  const toast = document.getElementById('pageToast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 2800);
 }
 
 /* ✅ تحديث عداد السلة */
 async function updateCartCount() {
   const res = await fetch("http://localhost:3000/cart");
   const data = await res.json();
-
-  document.getElementById("cartCount").textContent = data.length;
+  const count = data.reduce((sum, item) => sum + (item.qty || 1), 0);
+  document.getElementById("cartCount").textContent = count;
 }
 
 /* ✅ أول ما الصفحة تفتح */
-window.onload = updateCartCount;
+window.onload = () => {
+  populateOptionSelects();
+  updateCartCount();
+};
 function openCart() {
   window.location.href = "http://localhost:3000/cart-page";
 }
