@@ -205,8 +205,10 @@
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -52%);
-    width: 300px;
-    animation: float 4s ease-in-out infinite;
+    width: 320px;
+    height: 320px;
+    object-fit: contain;
+    border-radius: 50%;
   }
 
   @keyframes float {
@@ -763,74 +765,7 @@
   <div class="hero-visual">
     <div class="bouquet-showcase">
       <div class="showcase-circle"></div>
-      <svg class="flower-svg" viewBox="0 0 280 360" xmlns="http://www.w3.org/2000/svg">
-        <!-- Stem -->
-        <path d="M140 340 Q130 280 120 240 Q135 200 140 160" stroke="#4a6741" stroke-width="6" fill="none" stroke-linecap="round"/>
-        <path d="M140 300 Q110 280 95 255" stroke="#4a6741" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <ellipse cx="88" cy="248" rx="18" ry="11" fill="#4a6741" transform="rotate(-40 88 248)" opacity="0.8"/>
-        <path d="M140 270 Q168 252 178 228" stroke="#4a6741" stroke-width="4" fill="none" stroke-linecap="round"/>
-        <ellipse cx="184" cy="222" rx="18" ry="11" fill="#4a6741" transform="rotate(30 184 222)" opacity="0.8"/>
-        <!-- Wrap paper -->
-        <path d="M100 340 L120 200 L160 200 L180 340 Z" fill="#f5d9e0" opacity="0.7"/>
-        <path d="M100 340 L115 240 L140 225 L165 240 L180 340 Z" fill="#fde8f0" opacity="0.6"/>
-        <path d="M110 340 L125 260 L155 260 L170 340 Z" fill="rgba(192,82,106,0.15)"/>
-        <!-- Big roses -->
-        <g transform="translate(140,115)">
-          <circle cx="0" cy="0" r="32" fill="#c0526a"/>
-          <circle cx="0" cy="0" r="24" fill="#d4687e"/>
-          <circle cx="0" cy="0" r="17" fill="#e07f90"/>
-          <circle cx="0" cy="0" r="10" fill="#eda0ab"/>
-          <circle cx="0" cy="0" r="5" fill="#f5c5cc"/>
-        </g>
-        <g transform="translate(100,145)">
-          <circle cx="0" cy="0" r="26" fill="#b03060"/>
-          <circle cx="0" cy="0" r="19" fill="#c44a78"/>
-          <circle cx="0" cy="0" r="13" fill="#d86890"/>
-          <circle cx="0" cy="0" r="7" fill="#eda0b0"/>
-        </g>
-        <g transform="translate(178,140)">
-          <circle cx="0" cy="0" r="24" fill="#e08098"/>
-          <circle cx="0" cy="0" r="17" fill="#ec9aaf"/>
-          <circle cx="0" cy="0" r="11" fill="#f5b8c6"/>
-          <circle cx="0" cy="0" r="6" fill="#fdd4dc"/>
-        </g>
-        <!-- Side roses -->
-        <g transform="translate(80,170)">
-          <circle cx="0" cy="0" r="20" fill="#c0526a"/>
-          <circle cx="0" cy="0" r="14" fill="#d4687e"/>
-          <circle cx="0" cy="0" r="8" fill="#e8a0af"/>
-        </g>
-        <g transform="translate(195,168)">
-          <circle cx="0" cy="0" r="18" fill="#a83055"/>
-          <circle cx="0" cy="0" r="12" fill="#c0507a"/>
-          <circle cx="0" cy="0" r="7" fill="#da80a0"/>
-        </g>
-        <!-- White accent flowers -->
-        <g transform="translate(125,175)">
-          <circle cx="0" cy="-8" r="6" fill="white" opacity="0.9"/>
-          <circle cx="8" cy="0" r="6" fill="white" opacity="0.9"/>
-          <circle cx="0" cy="8" r="6" fill="white" opacity="0.9"/>
-          <circle cx="-8" cy="0" r="6" fill="white" opacity="0.9"/>
-          <circle cx="0" cy="0" r="4" fill="#fde8c0"/>
-        </g>
-        <g transform="translate(160,178)">
-          <circle cx="0" cy="-7" r="5" fill="white" opacity="0.85"/>
-          <circle cx="7" cy="0" r="5" fill="white" opacity="0.85"/>
-          <circle cx="0" cy="7" r="5" fill="white" opacity="0.85"/>
-          <circle cx="-7" cy="0" r="5" fill="white" opacity="0.85"/>
-          <circle cx="0" cy="0" r="3.5" fill="#f5d090"/>
-        </g>
-        <!-- Baby's breath -->
-        <circle cx="113" cy="130" r="3" fill="white" opacity="0.8"/>
-        <circle cx="165" cy="120" r="3" fill="white" opacity="0.8"/>
-        <circle cx="150" cy="155" r="2.5" fill="white" opacity="0.7"/>
-        <circle cx="108" cy="158" r="2" fill="white" opacity="0.7"/>
-        <circle cx="172" cy="158" r="2.5" fill="white" opacity="0.7"/>
-        <!-- Ribbon -->
-        <path d="M120 215 Q140 205 160 215" stroke="#c9a96e" stroke-width="3" fill="none"/>
-        <path d="M120 215 L110 225 Q115 218 120 215 Z" fill="#c9a96e"/>
-        <path d="M160 215 L170 225 Q165 218 160 215 Z" fill="#c9a96e"/>
-      </svg>
+      <img class="flower-svg" src="518233451_17846402106516031_5964991754477913350_n.jpg" alt="Luxury Flower Bouquet">
       <div class="badge-card top-right">
         <span class="icon">🌹</span>
         <div>
