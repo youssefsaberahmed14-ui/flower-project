@@ -586,6 +586,113 @@
   .checkout-btn:hover { background: var(--rose-dark); transform: translateY(-1px); }
   .checkout-btn:disabled { background: #d0b0b8; cursor: default; transform: none; }
 
+  /* CHECKOUT MODAL */
+  .checkout-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .checkout-modal .modal-content {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+  }
+
+  .checkout-modal h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .checkout-modal .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .checkout-modal label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+  }
+
+  .checkout-modal input,
+  .checkout-modal textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.9rem;
+  }
+
+  .checkout-modal textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .checkout-summary {
+    background: var(--cream);
+    padding: 1rem;
+    border-radius: 10px;
+    margin: 1rem 0;
+  }
+
+  .checkout-summary .summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .checkout-summary .summary-row.total {
+    border-top: 1px solid var(--border);
+    padding-top: 0.5rem;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--rose);
+  }
+
+  .modal-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .modal-buttons .btn {
+    flex: 1;
+    padding: 0.8rem;
+  }
+
+  .cancel-btn {
+    background: var(--text-mid);
+  }
+
+  .cancel-btn:hover {
+    background: var(--text-dark);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
   .wa-btn {
     width: 100%;
     height: 44px;
@@ -872,6 +979,60 @@
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- CHECKOUT MODAL -->
+<div class="checkout-modal" id="checkoutModal" style="display: none;">
+  <div class="modal-content">
+    <h3>إتمام الطلب</h3>
+    
+    <form id="checkoutForm">
+      <div class="form-group">
+        <label for="customerName">الاسم كاملا *</label>
+        <input type="text" id="customerName" required>
+      </div>
+
+      <div class="form-group">
+        <label for="customerEmail">البريد الإلكتروني *</label>
+        <input type="email" id="customerEmail" required>
+      </div>
+
+      <div class="form-group">
+        <label for="customerPhone">رقم الهاتف *</label>
+        <input type="tel" id="customerPhone" placeholder="01XXXXXXXXX" required>
+      </div>
+
+      <div class="form-group">
+        <label for="deliveryAddress">عنوان التوصيل *</label>
+        <textarea id="deliveryAddress" placeholder="الحي - الشارع - رقم البناء - الملاحظات" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="specialNotes">ملاحظات إضافية</label>
+        <textarea id="specialNotes" placeholder="أي طلبات خاصة أو ملاحظات..."></textarea>
+      </div>
+
+      <div class="checkout-summary">
+        <div class="summary-row">
+          <span>السعر:</span>
+          <span id="modalSubtotal">0 ج.م</span>
+        </div>
+        <div class="summary-row">
+          <span>التوصيل:</span>
+          <span id="modalShipping">50 ج.م</span>
+        </div>
+        <div class="summary-row total">
+          <span>الإجمالي:</span>
+          <span id="modalTotal">0 ج.م</span>
+        </div>
+      </div>
+
+      <div class="modal-buttons">
+        <button type="button" class="btn cancel-btn" onclick="closeCheckoutModal()">إلغاء</button>
+        <button type="button" class="btn" id="submitOrderBtn" style="background: var(--rose);" onclick="submitOrder()">تأكيد الطلب</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
 const PROMO = 'YOUKA15';
 const DISC = 0.15;
@@ -1098,7 +1259,103 @@ function selectDelivery(radio) {
 }
 
 function goCheckout() {
-  showToast('جاري الانتقال لصفحة التوصيل...');
+  if (cart.length === 0) {
+    showToast('السلة فارغة');
+    return;
+  }
+  
+  showCheckoutModal();
+}
+
+function calculateTotal() {
+  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const shipping = deliveryMode === 'express' ? SHIP_EXP : SHIP_STD;
+  return subtotal + (subtotal >= FREE_ABOVE ? 0 : shipping);
+}
+
+function showCheckoutModal() {
+  const modal = document.getElementById('checkoutModal');
+  const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const shipping = deliveryMode === 'express' ? SHIP_EXP : SHIP_STD;
+  const total = subtotal + (subtotal >= FREE_ABOVE ? 0 : shipping);
+  
+  document.getElementById('modalSubtotal').textContent = subtotal.toLocaleString('ar-EG') + ' ج.م';
+  document.getElementById('modalShipping').textContent = (subtotal >= FREE_ABOVE ? '0' : shipping) + ' ج.م';
+  document.getElementById('modalTotal').textContent = total.toLocaleString('ar-EG') + ' ج.م';
+  
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCheckoutModal() {
+  const modal = document.getElementById('checkoutModal');
+  modal.style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', (e) => {
+  const modal = document.getElementById('checkoutModal');
+  if (e.target === modal) {
+    closeCheckoutModal();
+  }
+});
+
+async function submitOrder() {
+  const customerName = document.getElementById('customerName').value.trim();
+  const customerEmail = document.getElementById('customerEmail').value.trim();
+  const customerPhone = document.getElementById('customerPhone').value.trim();
+  const deliveryAddress = document.getElementById('deliveryAddress').value.trim();
+  const specialNotes = document.getElementById('specialNotes').value.trim();
+
+  if (!customerName || !customerEmail || !customerPhone || !deliveryAddress) {
+    showToast('يرجى ملء جميع الحقول المطلوبة');
+    return;
+  }
+
+  const submitBtn = document.getElementById('submitOrderBtn');
+  submitBtn.disabled = true;
+
+  try {
+    const response = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customerName,
+        customerEmail,
+        customerPhone,
+        deliveryAddress,
+        specialNotes,
+        items: cart,
+        totalPrice: calculateTotal()
+      })
+    });
+
+    if (response.ok) {
+      const order = await response.json();
+      showToast('✓ تم إنشاء الطلب بنجاح');
+      
+      // Clear cart
+      await fetch('/cart', { method: 'DELETE' });
+      cart = [];
+      
+      // Close modal and reset form
+      closeCheckoutModal();
+      document.getElementById('checkoutForm').reset();
+      
+      // Redirect to order confirmation or cart page
+      setTimeout(() => {
+        window.location.href = '/cart-page?orderId=' + order.id;
+      }, 1000);
+    } else {
+      showToast('حدث خطأ في إنشاء الطلب');
+    }
+  } catch (error) {
+    console.error('Order error:', error);
+    showToast('حدث خطأ في الاتصال');
+  } finally {
+    submitBtn.disabled = false;
+  }
 }
 
 function orderWhatsapp() {

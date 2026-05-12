@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Youka Flory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --rose: #c0526a;
+            --rose-light: #f5d9e0;
+            --rose-dark: #8a2a40;
+            --cream: #fdf6f0;
+            --gold: #c9a96e;
+            --green: #4a6741;
+            --green-light: #d4e4c8;
+            --text-dark: #2a1a1e;
+            --text-mid: #6b4a52;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: var(--cream);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--text-dark);
+            color: white;
+            padding: 2rem 1rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--rose-light);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-menu button {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 0.8rem 1rem;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .sidebar-menu button:hover,
+        .sidebar-menu button.active {
+            background: var(--rose);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 2rem;
+        }
+
+        header {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-bottom: 3px solid var(--rose);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--text-dark);
+            font-size: 2rem;
+        }
+
+        .logout-btn {
+            background: var(--rose);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover { background: var(--rose-dark); }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid var(--rose);
+            background: transparent;
+            color: var(--rose);
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .tab-btn.active {
+            background: var(--rose);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+        }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        input, select, textarea {
+            padding: 0.8rem;
+            border: 1px solid rgba(192, 82, 106, 0.2);
+            border-radius: 5px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--rose);
+            background: rgba(245, 217, 224, 0.2);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            background: var(--rose);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Tajawal', sans-serif;
+            transition: background 0.3s;
+        }
+
+        .btn:hover { background: var(--rose-dark); }
+
+        .btn.success { background: var(--green); }
+        .btn.success:hover { background: #3d5533; }
+
+        .btn.danger { background: #e74c3c; }
+        .btn.danger:hover { background: #c0392b; }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        thead {
+            background: rgba(245, 217, 224, 0.3);
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            color: var(--text-dark);
+            font-weight: 600;
+            border-bottom: 2px solid rgba(192, 82, 106, 0.2);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(192, 82, 106, 0.1);
+            color: var(--text-mid);
+        }
+
+        tr:hover {
+            background: rgba(245, 217, 224, 0.1);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-pending { background: rgba(201, 169, 110, 0.2); color: var(--gold); }
+        .status-completed { background: rgba(74, 103, 65, 0.2); color: var(--green); }
+        .status-cancelled { background: rgba(192, 82, 106, 0.2); color: var(--rose); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--rose);
+        }
+
+        .stat-label {
+            color: var(--text-mid);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-value {
+            color: var(--text-dark);
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .success { color: var(--green); }
+        .warning { color: var(--gold); }
+        .danger { color: #e74c3c; }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success { background: rgba(74, 103, 65, 0.15); color: var(--green); }
+        .alert-danger { background: rgba(192, 82, 106, 0.15); color: var(--rose-dark); }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .no-data {
+            text-align: center;
+            color: var(--text-mid);
+            padding: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+                padding: 1rem 0.5rem;
+            }
+
+            .main-content {
+                margin-left: 200px;
+                padding: 1rem;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">Youka Admin</div>
+            <ul class="sidebar-menu">
+                <li><button class="tab-switch active" data-tab="dashboard">📊 Dashboard</button></li>
+                <li><button class="tab-switch" data-tab="products">📦 Products</button></li>
+                <li><button class="tab-switch" data-tab="prices">💰 Prices</button></li>
+                <li><button class="tab-switch" data-tab="promo">🎁 Promo Codes</button></li>
+                <li><button class="tab-switch" data-tab="orders">📋 Orders</button></li>
+                <li><button class="tab-switch" data-tab="customers">👥 Customers</button></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h1>Admin Dashboard</h1>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </header>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div id="dashAlert"></div>
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Sales</div>
+                        <div class="stat-value success">$0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Orders</div>
+                        <div class="stat-value warning">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Customers</div>
+                        <div class="stat-value">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Products</div>
+                        <div class="stat-value">0</div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-title">Daily Sales</div>
+                        <canvas id="dailyChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">Order Status</div>
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-title">Top Products</div>
+                        <canvas id="productsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Tab -->
+            <div id="products" class="tab-content">
+                <div class="card">
+                    <h2>Manage Products</h2>
+                    <div id="productAlert"></div>
+                    
+                    <h3>Add New Product</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Product Name</label>
+                            <input type="text" id="productName" placeholder="Enter product name">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" id="productSub" placeholder="Enter description">
+                        </div>
+                        <div class="form-group">
+                            <label>Price</label>
+                            <input type="number" id="productPrice" placeholder="Enter price">
+                        </div>
+                        <div class="form-group">
+                            <label>Icon (Emoji)</label>
+                            <input type="text" id="productIcon" placeholder="e.g., 🌹" value="🌹">
+                        </div>
+                        <div class="form-group">
+                            <label>Background Class</label>
+                            <select id="productBg">
+                                <option value="bg-pink">Pink</option>
+                                <option value="bg-red">Red</option>
+                                <option value="bg-purple">Purple</option>
+                                <option value="bg-yellow">Yellow</option>
+                                <option value="bg-white">White</option>
+                                <option value="bg-mixed">Mixed</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tag (Optional)</label>
+                            <input type="text" id="productTag" placeholder="e.g., New, Popular">
+                        </div>
+                    </div>
+                    <button class="btn" onclick="addProduct()">Add Product</button>
+
+                    <h3 style="margin-top: 2rem;">Products List</h3>
+                    <table id="productsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Tag</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsBody">
+                            <tr><td colspan="6" class="no-data">No products yet</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Prices Tab -->
+            <div id="prices" class="tab-content">
+                <div class="card">
+                    <h2>Update Prices</h2>
+                    <div id="priceAlert"></div>
+                    <table id="pricesTable">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Current Price</th>
+                                <th>New Price</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pricesBody">
+                            <tr><td colspan="4" class="no-data">No products yet</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Promo Codes Tab -->
+            <div id="promo" class="tab-content">
+                <div class="card">
+                    <h2>Manage Promo Codes</h2>
+                    <div id="promoAlert"></div>
+
+                    <h3>Create New Promo Code</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Promo Code</label>
+                            <input type="text" id="promoCode" placeholder="e.g., WELCOME20">
+                        </div>
+                        <div class="form-group">
+                            <label>Discount</label>
+                            <input type="number" id="promoDiscount" placeholder="Amount">
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="promoType">
+                                <option value="percentage">Percentage (%)</option>
+                                <option value="fixed">Fixed ($)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn success" onclick="addPromo()">Create Promo Code</button>
+
+                    <h3 style="margin-top: 2rem;">Active Promo Codes</h3>
+                    <table id="promoTable">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Discount</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="promoBody">
+                            <tr><td colspan="5" class="no-data">No promo codes yet</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="orders" class="tab-content">
+                <div class="card">
+                    <h2>Track Orders</h2>
+                    <table id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Email</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersBody">
+                            <tr><td colspan="7" class="no-data">No orders yet</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Customers Tab -->
+            <div id="customers" class="tab-content">
+                <div class="card">
+                    <h2>Customer List</h2>
+                    <table id="customersTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Orders</th>
+                                <th>Total Spent</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersBody">
+                            <tr><td colspan="5" class="no-data">No customers yet</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let dailyChart, statusChart, productsChart;
+
+        // Switch tabs
+        document.querySelectorAll('.tab-switch').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-switch').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+                if (tabId === 'dashboard') loadDashboard();
+            });
+        });
+
+        // Load dashboard
+        async function loadDashboard() {
+            try {
+                const res = await fetch('/api/dashboard');
+                const data = await res.json();
+                updateDashboardStats(data);
+                updateCharts(data);
+            } catch (err) {
+                console.error('Error loading dashboard:', err);
+            }
+        }
+
+        function updateDashboardStats(data) {
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-label">Total Sales</div>
+                    <div class="stat-value success">$${data.totalSales.toLocaleString()}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Orders</div>
+                    <div class="stat-value warning">${data.totalOrders}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Customers</div>
+                    <div class="stat-value">${data.customersCount}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Products</div>
+                    <div class="stat-value">${data.productsCount}</div>
+                </div>
+            `;
+        }
+
+        function updateCharts(data) {
+            if (dailyChart) dailyChart.destroy();
+            if (statusChart) statusChart.destroy();
+            if (productsChart) productsChart.destroy();
+
+            const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+            const dailyGradient = dailyCtx.createLinearGradient(0, 0, 0, 400);
+            dailyGradient.addColorStop(0, 'rgba(192, 82, 106, 0.3)');
+            dailyGradient.addColorStop(1, 'rgba(192, 82, 106, 0.01)');
+            
+            dailyChart = new Chart(dailyCtx, {
+                type: 'line',
+                data: {
+                    labels: data.dailySales.map(d => d.date),
+                    datasets: [{
+                        label: 'Daily Sales',
+                        data: data.dailySales.map(d => d.amount),
+                        borderColor: '#c0526a',
+                        backgroundColor: dailyGradient,
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { font: { family: "'Tajawal', sans-serif" } } } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { font: { family: "'Tajawal', sans-serif" } } }
+                    }
+                }
+            });
+
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            statusChart = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Pending', 'Cancelled'],
+                    datasets: [{
+                        data: [data.completedOrders, data.pendingOrders, data.cancelledOrders],
+                        backgroundColor: ['#4a6741', '#c9a96e', '#c0526a']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'bottom', labels: { font: { family: "'Tajawal', sans-serif" } } } }
+                }
+            });
+
+            const productsCtx = document.getElementById('productsChart').getContext('2d');
+            productsChart = new Chart(productsCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.topProducts.map(p => p.name.substring(0, 15)),
+                    datasets: [{
+                        label: 'Sales',
+                        data: data.topProducts.map(p => p.sales),
+                        backgroundColor: '#c0526a'
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    plugins: { legend: { labels: { font: { family: "'Tajawal', sans-serif" } } } }
+                }
+            });
+        }
+
+        // Load products
+        async function loadProducts() {
+            try {
+                const res = await fetch('/api/products');
+                const products = await res.json();
+                
+                let productsHtml = '';
+                let pricesHtml = '';
+                
+                if (products.length === 0) {
+                    productsHtml = '<tr><td colspan="6" class="no-data">No products yet</td></tr>';
+                    pricesHtml = '<tr><td colspan="4" class="no-data">No products yet</td></tr>';
+                } else {
+                    products.forEach(p => {
+                        productsHtml += `
+                            <tr>
+                                <td>${p.id}</td>
+                                <td>${p.name}</td>
+                                <td>${p.sub}</td>
+                                <td>$${p.price}</td>
+                                <td>${p.tag || '-'}</td>
+                                <td>
+                                    <button class="btn btn-small" onclick="editProduct(${p.id})">Edit</button>
+                                    <button class="btn btn-small danger" onclick="deleteProduct(${p.id})">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                        
+                        pricesHtml += `
+                            <tr>
+                                <td>${p.name}</td>
+                                <td>$${p.price}</td>
+                                <td><input type="number" id="price-${p.id}" value="${p.price}" style="width:80px;"></td>
+                                <td><button class="btn btn-small" onclick="updatePrice(${p.id})">Update</button></td>
+                            </tr>
+                        `;
+                    });
+                }
+                
+                document.getElementById('productsBody').innerHTML = productsHtml;
+                document.getElementById('pricesBody').innerHTML = pricesHtml;
+            } catch (err) {
+                console.error('Error loading products:', err);
+            }
+        }
+
+        async function addProduct() {
+            const data = {
+                name: document.getElementById('productName').value,
+                sub: document.getElementById('productSub').value,
+                price: parseInt(document.getElementById('productPrice').value),
+                icon: document.getElementById('productIcon').value,
+                bg: document.getElementById('productBg').value,
+                tag: document.getElementById('productTag').value || null
+            };
+
+            if (!data.name || !data.price) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/products', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (res.ok) {
+                    showAlert('productAlert', 'Product added successfully!', 'success');
+                    document.getElementById('productName').value = '';
+                    document.getElementById('productSub').value = '';
+                    document.getElementById('productPrice').value = '';
+                    document.getElementById('productTag').value = '';
+                    loadProducts();
+                }
+            } catch (err) {
+                showAlert('productAlert', 'Error adding product', 'danger');
+            }
+        }
+
+        async function deleteProduct(id) {
+            if (!confirm('Are you sure?')) return;
+            try {
+                await fetch(`/api/products/${id}`, { method: 'DELETE' });
+                loadProducts();
+                showAlert('productAlert', 'Product deleted successfully!', 'success');
+            } catch (err) {
+                showAlert('productAlert', 'Error deleting product', 'danger');
+            }
+        }
+
+        async function updatePrice(id) {
+            const newPrice = parseInt(document.getElementById(`price-${id}`).value);
+            try {
+                await fetch(`/api/products/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ price: newPrice })
+                });
+                showAlert('priceAlert', 'Price updated successfully!', 'success');
+                loadProducts();
+            } catch (err) {
+                showAlert('priceAlert', 'Error updating price', 'danger');
+            }
+        }
+
+        // Load promo codes
+        async function loadPromos() {
+            try {
+                const res = await fetch('/api/promo-codes');
+                const promos = await res.json();
+                
+                let html = '';
+                if (promos.length === 0) {
+                    html = '<tr><td colspan="5" class="no-data">No promo codes yet</td></tr>';
+                } else {
+                    promos.forEach(p => {
+                        html += `
+                            <tr>
+                                <td>${p.code}</td>
+                                <td>${p.discount}</td>
+                                <td>${p.type === 'percentage' ? '%' : '$'}</td>
+                                <td><span class="status-badge status-${p.active ? 'completed' : 'cancelled'}">${p.active ? 'Active' : 'Inactive'}</span></td>
+                                <td>
+                                    <button class="btn btn-small danger" onclick="deletePromo(${p.id})">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+                document.getElementById('promoBody').innerHTML = html;
+            } catch (err) {
+                console.error('Error loading promos:', err);
+            }
+        }
+
+        async function addPromo() {
+            const data = {
+                code: document.getElementById('promoCode').value.toUpperCase(),
+                discount: parseInt(document.getElementById('promoDiscount').value),
+                type: document.getElementById('promoType').value
+            };
+
+            if (!data.code || !data.discount) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/promo-codes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (res.ok) {
+                    showAlert('promoAlert', 'Promo code created successfully!', 'success');
+                    document.getElementById('promoCode').value = '';
+                    document.getElementById('promoDiscount').value = '';
+                    loadPromos();
+                }
+            } catch (err) {
+                showAlert('promoAlert', 'Error creating promo code', 'danger');
+            }
+        }
+
+        async function deletePromo(id) {
+            if (!confirm('Are you sure?')) return;
+            try {
+                await fetch(`/api/promo-codes/${id}`, { method: 'DELETE' });
+                loadPromos();
+                showAlert('promoAlert', 'Promo code deleted successfully!', 'success');
+            } catch (err) {
+                showAlert('promoAlert', 'Error deleting promo code', 'danger');
+            }
+        }
+
+        // Load orders
+        async function loadOrders() {
+            try {
+                const res = await fetch('/api/orders');
+                const orders = await res.json();
+                
+                let html = '';
+                if (orders.length === 0) {
+                    html = '<tr><td colspan="7" class="no-data">No orders yet</td></tr>';
+                } else {
+                    orders.forEach(o => {
+                        const orderDate = new Date(o.orderDate).toLocaleDateString();
+                        html += `
+                            <tr>
+                                <td>#${o.id}</td>
+                                <td>${o.customerName}</td>
+                                <td>${o.customerEmail}</td>
+                                <td>$${o.totalPrice}</td>
+                                <td><span class="status-badge status-${o.status}">${o.statusLabel}</span></td>
+                                <td>${orderDate}</td>
+                                <td>
+                                    <select onchange="updateOrderStatus(${o.id}, this.value)">
+                                        <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                        <option value="completed" ${o.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                        <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+                document.getElementById('ordersBody').innerHTML = html;
+            } catch (err) {
+                console.error('Error loading orders:', err);
+            }
+        }
+
+        async function updateOrderStatus(id, status) {
+            try {
+                await fetch(`/api/orders/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        status,
+                        statusLabel: status.charAt(0).toUpperCase() + status.slice(1)
+                    })
+                });
+                loadOrders();
+            } catch (err) {
+                console.error('Error updating order:', err);
+            }
+        }
+
+        // Load customers
+        async function loadCustomers() {
+            try {
+                const res = await fetch('/api/customers');
+                const customers = await res.json();
+                
+                let html = '';
+                if (customers.length === 0) {
+                    html = '<tr><td colspan="5" class="no-data">No customers yet</td></tr>';
+                } else {
+                    customers.forEach(c => {
+                        html += `
+                            <tr>
+                                <td>${c.name}</td>
+                                <td>${c.email}</td>
+                                <td>${c.phone}</td>
+                                <td>${c.totalOrders}</td>
+                                <td>$${c.totalSpent}</td>
+                            </tr>
+                        `;
+                    });
+                }
+                document.getElementById('customersBody').innerHTML = html;
+            } catch (err) {
+                console.error('Error loading customers:', err);
+            }
+        }
+
+        function showAlert(elementId, message, type) {
+            const alert = document.getElementById(elementId);
+            alert.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => {
+                alert.innerHTML = '';
+            }, 3000);
+        }
+
+        function logout() {
+            window.location.href = '/';
+        }
+
+        // Initial load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboard();
+            loadProducts();
+            loadPromos();
+            loadOrders();
+            loadCustomers();
+            
+            // Reload data every 30 seconds
+            setInterval(() => {
+                loadDashboard();
+                loadOrders();
+                loadCustomers();
+            }, 30000);
+        });
+    </script>
+</body>
+</html>
