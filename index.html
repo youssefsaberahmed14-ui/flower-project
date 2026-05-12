@@ -678,6 +678,72 @@
     margin-top: 1.2rem;
   }
 
+  /* RETURN POLICY MODAL */
+  .policy-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 1rem;
+  }
+
+  .policy-modal .policy-content {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .policy-modal .policy-close {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-mid);
+    width: 30px; height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+  }
+
+  .policy-modal .policy-close:hover {
+    background: var(--cream);
+    color: var(--text-dark);
+  }
+
+  .policy-modal h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 1.8rem;
+  }
+
+  .policy-modal .policy-text {
+    line-height: 1.8;
+    color: var(--text-mid);
+    font-size: 1rem;
+  }
+
+  .policy-modal .policy-text p {
+    margin-bottom: 1rem;
+  }
+
+  .policy-modal .policy-text strong {
+    color: var(--text-dark);
+  }
+
   .options-btn {
     border: none;
     border-radius: 14px;
@@ -790,9 +856,9 @@
 
 <!-- STATS -->
 <div class="stats-bar">
-  <div class="stat"><strong>+2000</strong><span>بوكيه تم توصيله</span></div>
+  <div class="stat"><strong>+100</strong><span>بوكيه تم توصيله</span></div>
   <div class="stat"><strong>98%</strong><span>عملاء راضون</span></div>
-  <div class="stat"><strong>24h</strong><span>توصيل سريع</span></div>
+  <div class="stat"><strong>1w</strong><span>توصيل سريع</span></div>
   <div class="stat"><strong>100%</strong><span>ورد طازج مضمون</span></div>
 </div>
 
@@ -896,7 +962,7 @@
   </div>
   <div style="margin-top:2.5rem;display:flex;gap:2rem;justify-content:center;flex-wrap:wrap">
     <div style="display:flex;align-items:center;gap:0.5rem;color:var(--text-mid);font-size:0.9rem">
-      <span>🚚</span> توصيل داخل ٢٤ ساعة
+      <span>🚚</span> توصيل خلال 1اسبوع
     </div>
     <div style="display:flex;align-items:center;gap:0.5rem;color:var(--text-mid);font-size:0.9rem">
       <span>🌿</span> ورد طازج مضمون
@@ -923,16 +989,16 @@
         <li><a href="#products">المنتجات</a></li>
         <li><a href="#occasions">المناسبات</a></li>
         <li><a href="#order">اطلب الآن</a></li>
-        <li><a href="#">سياسة الاسترجاع</a></li>
+        <li><a href="#" onclick="showReturnPolicy(); return false;">سياسة الاسترجاع</a></li>
       </ul>
     </div>
     <div class="footer-col">
       <h4>تواصلي معنا</h4>
       <ul>
-        <li><a href="#">واتساب</a></li>
-        <li><a href="#">إنستجرام</a></li>
-        <li><a href="#">فيسبوك</a></li>
-        <li><a href="#">تيك توك</a></li>
+        <li><a href="https://wa.me/201154371751">واتساب</a></li>
+        <li><a href="https://www.instagram.com/youka_fl0ry?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">إنستجرام</a></li>
+        <li><a href="https://www.facebook.com/youkaflory">فيسبوك</a></li>
+        <li><a href="https://www.tiktok.com/@youka_flory">تيك توك</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -951,7 +1017,7 @@
 </footer>
 
 <!-- WhatsApp Float -->
-<a class="whatsapp-float" href="https://wa.me/201000000000" title="تواصل عبر واتساب">📱</a>
+<a class="whatsapp-float" href="https://wa.me/201154371751" title="تواصل عبر واتساب">📱</a>
 
 <div id="optionsOverlay" class="options-overlay" onclick="closeOptionsModal()">
   <div class="options-modal" onclick="event.stopPropagation()">
@@ -981,6 +1047,21 @@
 </div>
 
 <div id="pageToast" class="toast"></div>
+
+<!-- RETURN POLICY MODAL -->
+<div id="policyModal" class="policy-modal" onclick="closePolicyModal()">
+  <div class="policy-content" onclick="event.stopPropagation()">
+    <button class="policy-close" onclick="closePolicyModal()" aria-label="إغلاق">×</button>
+    <h3>سياسة الاسترجاع والاسترداد</h3>
+    <div class="policy-text">
+      <p><strong>سياسة الاسترجاع:</strong></p>
+      <p>• إذا تم استرجاع الطلب بعد 24 ساعة من وقت الطلب، لا يتم استرداد الدفعة المقدمة.</p>
+      <p>• إذا تم شحن الطلب ووصل إلى العميل، لا يتم قبول الاسترجاع تحت أي ظرف.</p>
+      <p>• يمكن استرجاع الطلب خلال 24 ساعة من الطلب فقط في حالة عدم الشحن بعد.</p>
+      <p>• جميع الطلبات تخضع لهذه السياسة لضمان جودة الخدمة والمنتجات.</p>
+    </div>
+  </div>
+</div>
 
 <script>
 
@@ -1101,6 +1182,18 @@ function showToast(message) {
   toast.classList.add('show');
   clearTimeout(toast._timer);
   toast._timer = setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+/* ✅ فتح modal سياسة الاسترجاع */
+function showReturnPolicy() {
+  document.getElementById('policyModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+/* ✅ إغلاق modal سياسة الاسترجاع */
+function closePolicyModal() {
+  document.getElementById('policyModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
 }
 
 /* ✅ تحديث عداد السلة */

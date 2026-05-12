@@ -637,6 +637,19 @@
     font-size: 0.9rem;
   }
 
+  .checkout-modal input.invalid-input,
+  .checkout-modal textarea.invalid-input {
+    border-color: #d02646;
+    box-shadow: 0 0 0 2px rgba(208,38,70,0.12);
+  }
+
+  .error-msg {
+    color: #d02646;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+
   .checkout-modal textarea {
     resize: vertical;
     min-height: 80px;
@@ -917,14 +930,14 @@
 
 <!-- NAV -->
 <nav>
-  <a href="youka_flory.html" class="nav-back">← رجوع للمتجر</a>
-  <a href="youka_flory.html" class="logo">Youka<span>_</span>Flory</a>
+  <a href="/" class="nav-back">← رجوع للمتجر</a>
+  <a href="/" class="logo">Youka<span>_</span>Flory</a>
   <div style="width:100px"></div>
 </nav>
 
 <!-- BREADCRUMB -->
 <div class="breadcrumb">
-  <a href="youka_flory.html">الرئيسية</a> ← سلة التسوق
+  <a href="/">الرئيسية</a> ← سلة التسوق
 </div>
 
 <!-- STEPS -->
@@ -942,11 +955,6 @@
   <div class="step">
     <div class="step-circle">3</div>
     <div class="step-label">بيانات التوصيل</div>
-  </div>
-  <div class="step-line"></div>
-  <div class="step">
-    <div class="step-circle">4</div>
-    <div class="step-label">الدفع</div>
   </div>
 </div>
 
@@ -973,7 +981,7 @@
         <div class="empty-icon">🌷</div>
         <div class="empty-title">سلتك فاضية!</div>
         <div class="empty-sub">ابدئي التسوق من كولكشننا الجميل</div>
-        <a href="youka_flory.html" class="shop-btn">تصفحي المنتجات 🌹</a>
+        <a href="/" class="shop-btn">تصفحي المنتجات 🌹</a>
       </div>
     </div>
 
@@ -1091,6 +1099,8 @@
           <textarea id="specialNotes" placeholder="أي طلبات خاصة أو ملاحظات..."></textarea>
         </div>
 
+        <div id="checkoutError" class="error-msg" style="display:none"></div>
+
         <div class="checkout-summary">
           <div class="summary-row">
             <span>السعر:</span>
@@ -1108,46 +1118,9 @@
 
         <div class="modal-buttons">
           <button type="button" class="btn cancel-btn" onclick="closeCheckoutModal()">إلغاء</button>
-          <button type="button" class="btn" id="nextPaymentBtn" style="background: var(--rose);" onclick="goToPaymentStep()">التالي</button>
+          <button type="button" class="btn" id="submitOrderBtn" style="background: var(--rose);" onclick="submitOrder()">تأكيد الطلب</button>
         </div>
       </form>
-    </div>
-
-    <!-- Step 2: Payment Method -->
-    <div id="step2" class="checkout-step" style="display: none;">
-      <h4>اختر طريقة الدفع</h4>
-      
-      <div class="payment-methods">
-        <div class="payment-option" onclick="selectPayment('cash')">
-          <input type="radio" id="paymentCash" name="paymentMethod" value="cash" checked>
-          <label for="paymentCash">
-            <div class="payment-icon">💵</div>
-            <div class="payment-title">الدفع عند الاستلام</div>
-            <div class="payment-desc">ادفع عند استلام الطلب</div>
-          </label>
-        </div>
-
-        <div class="payment-option" onclick="selectPayment('online')">
-          <input type="radio" id="paymentOnline" name="paymentMethod" value="online">
-          <label for="paymentOnline">
-            <div class="payment-icon">💳</div>
-            <div class="payment-title">الدفع أونلاين</div>
-            <div class="payment-desc">ادفع الآن ببطاقتك البنكية</div>
-          </label>
-        </div>
-      </div>
-
-      <div class="checkout-summary">
-        <div class="summary-row">
-          <span>الإجمالي:</span>
-          <span id="paymentTotal">0 ج.م</span>
-        </div>
-      </div>
-
-      <div class="modal-buttons">
-        <button type="button" class="btn cancel-btn" onclick="backToCustomerStep()">رجوع</button>
-        <button type="button" class="btn" id="submitOrderBtn" style="background: var(--rose);" onclick="submitOrder()">تأكيد الطلب</button>
-      </div>
     </div>
   </div>
 </div>
@@ -1393,6 +1366,7 @@ function calculateTotal() {
 }
 
 function showCheckoutModal() {
+  clearCheckoutValidation();
   const modal = document.getElementById('checkoutModal');
   const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
   const shipping = deliveryMode === 'express' ? SHIP_EXP : SHIP_STD;
@@ -1420,33 +1394,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-function goToPaymentStep() {
-  const customerName = document.getElementById('customerName').value.trim();
-  const customerEmail = document.getElementById('customerEmail').value.trim();
-  const customerPhone = document.getElementById('customerPhone').value.trim();
-  const deliveryAddress = document.getElementById('deliveryAddress').value.trim();
-
-  if (!customerName || !customerEmail || !customerPhone || !deliveryAddress) {
-    showToast('يرجى ملء جميع الحقول المطلوبة');
-    return;
-  }
-
-  // Show payment step
-  document.getElementById('step1').style.display = 'none';
-  document.getElementById('step2').style.display = 'block';
-  
-  // Update total in payment step
-  document.getElementById('paymentTotal').textContent = document.getElementById('modalTotal').textContent;
-}
-
-function backToCustomerStep() {
-  document.getElementById('step1').style.display = 'block';
-  document.getElementById('step2').style.display = 'none';
-}
-
-function selectPayment(method) {
-  document.getElementById('payment' + (method === 'cash' ? 'Cash' : 'Online')).checked = true;
-}
 
 async function submitOrder() {
   const customerName = document.getElementById('customerName').value.trim();
@@ -1454,10 +1401,9 @@ async function submitOrder() {
   const customerPhone = document.getElementById('customerPhone').value.trim();
   const deliveryAddress = document.getElementById('deliveryAddress').value.trim();
   const specialNotes = document.getElementById('specialNotes').value.trim();
-  const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+  const paymentMethod = 'cash';
 
-  if (!customerName || !customerEmail || !customerPhone || !deliveryAddress) {
-    showToast('يرجى ملء جميع الحقول المطلوبة');
+  if (!validateCheckoutForm()) {
     return;
   }
 
@@ -1524,6 +1470,63 @@ function showToast(msg) {
   t.classList.add('show');
   clearTimeout(t._timer);
   t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function showCheckoutError(message) {
+  const errorEl = document.getElementById('checkoutError');
+  errorEl.textContent = message;
+  errorEl.style.display = message ? 'block' : 'none';
+}
+
+function clearCheckoutValidation() {
+  showCheckoutError('');
+  ['customerName', 'customerEmail', 'customerPhone', 'deliveryAddress'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('invalid-input');
+  });
+}
+
+function validateCheckoutForm() {
+  clearCheckoutValidation();
+
+  const name = document.getElementById('customerName').value.trim();
+  const email = document.getElementById('customerEmail').value.trim();
+  const phone = document.getElementById('customerPhone').value.trim();
+  const address = document.getElementById('deliveryAddress').value.trim();
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRegex = /^(01[0125]|\+201[0125])\d{8}$/;
+
+  if (name.length < 3) {
+    document.getElementById('customerName').classList.add('invalid-input');
+    showCheckoutError('الاسم غير صحيح، من فضلك اكتب اسمك الحقيقي بالكامل.');
+    showToast('الاسم غير صحيح');
+    return false;
+  }
+
+  if (!emailRegex.test(email)) {
+    document.getElementById('customerEmail').classList.add('invalid-input');
+    showCheckoutError('البريد الإلكتروني غير صالح. أعد كتابة البريد بشكل صحيح.');
+    showToast('البريد الإلكتروني غير صالح');
+    return false;
+  }
+
+  if (!phoneRegex.test(phone)) {
+    document.getElementById('customerPhone').classList.add('invalid-input');
+    showCheckoutError('رقم الهاتف غير صالح. استخدم رقم محمول مصري صحيح.');
+    showToast('رقم الهاتف غير صالح');
+    return false;
+  }
+
+  if (address.length < 10) {
+    document.getElementById('deliveryAddress').classList.add('invalid-input');
+    showCheckoutError('عنوان التوصيل غير كافٍ. أدخل عنوانًا كاملًا.');
+    showToast('عنوان التوصيل غير كافٍ');
+    return false;
+  }
+
+  clearCheckoutValidation();
+  return true;
 }
 
 document.getElementById('promoInput').addEventListener('keydown', e => {
