@@ -190,6 +190,9 @@
     position: relative;
     width: 380px;
     height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .showcase-circle {
@@ -204,9 +207,10 @@
   .flower-svg {
     position: absolute;
     top: 50%; left: 50%;
-    transform: translate(-50%, -52%);
-    width: 320px;
-    height: 320px;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 320px;
+    height: auto;
     object-fit: contain;
     border-radius: 50%;
   }
@@ -765,7 +769,7 @@
   <div class="hero-visual">
     <div class="bouquet-showcase">
       <div class="showcase-circle"></div>
-      <img class="flower-svg" src="518233451_17846402106516031_5964991754477913350_n.jpg" alt="Luxury Flower Bouquet">
+      <img class="flower-svg" src="/static/518233451_17846402106516031_5964991754477913350_n.jpg" alt="Luxury Flower Bouquet">
       <div class="badge-card top-right">
         <span class="icon">🌹</span>
         <div>
@@ -808,77 +812,8 @@
     </div>
   </div>
 
-  <div class="products-grid">
-
-    <div class="product-card fade-up">
-      <span class="product-badge">الأكثر طلباً</span>
-      <div class="product-img product-img-bg-pink">🌹</div>
-      <div class="product-info">
-        <div class="product-name">بوكيه الورد الأحمر الكلاسيكي</div>
-        <div class="product-desc">12 وردة حمراء طازجة مع أوراق خضراء وشريطة ذهبية</div>
-        <div class="product-footer">
-          <div class="product-price">٢٥٠ جنيه <span>/ بوكيه</span></div>
-<button class="add-btn" onclick="addToCart(1, this)">+</button>        </div>
-      </div>
-    </div>
-
-    <div class="product-card fade-up">
-      <div class="product-img product-img-bg-red">🌸</div>
-      <div class="product-info">
-        <div class="product-name">بوكيه البيبي روز</div>
-        <div class="product-desc">باقة رومانسية من ورد الـ baby roses بتدرجات الوردي</div>
-        <div class="product-footer">
-          <div class="product-price">٣٢٠ جنيه <span>/ بوكيه</span></div>
-<button class="add-btn" onclick="addToCart(2, this)">+</button>        </div>
-      </div>
-    </div>
-
-    <div class="product-card fade-up">
-      <span class="product-badge" style="background:var(--gold)">جديد</span>
-      <div class="product-img product-img-bg-purple">💜</div>
-      <div class="product-info">
-        <div class="product-name">بوكيه اللافندر الملكي</div>
-        <div class="product-desc">ورد بنفسجي وأبيض مع لافندر طبيعي وعطر مميز</div>
-        <div class="product-footer">
-          <div class="product-price">٣٨٠ جنيه <span>/ بوكيه</span></div>
-<button class="add-btn" onclick="addToCart(3, this)">+</button>        </div>
-      </div>
-    </div>
-
-    <div class="product-card fade-up">
-      <div class="product-img product-img-bg-yellow">🌻</div>
-      <div class="product-info">
-        <div class="product-name">بوكيه السنفلور والورد</div>
-        <div class="product-desc">مزيج مبهج من عباد الشمس وورد أصفر وأبيض</div>
-        <div class="product-footer">
-          <div class="product-price">٢٨٠ جنيه <span>/ بوكيه</span></div>
-<button class="add-btn" onclick="addToCart(4, this)">+</button>        </div>
-      </div>
-    </div>
-
-    <div class="product-card fade-up">
-      <div class="product-img product-img-bg-white">🤍</div>
-      <div class="product-info">
-        <div class="product-name">بوكيه الفرح الأبيض</div>
-        <div class="product-desc">ورد أبيض نقي مثالي للأعراس والمناسبات الرسمية</div>
-        <div class="product-footer">
-          <div class="product-price">٤٥٠ جنيه <span>/ بوكيه</span></div>
-<button class="add-btn" onclick="addToCart(5, this)">+</button>        </div>
-      </div>
-    </div>
-
-    <div class="product-card fade-up">
-      <span class="product-badge" style="background:var(--green)">مميز</span>
-      <div class="product-img product-img-bg-mixed">💐</div>
-      <div class="product-info">
-        <div class="product-name">بوكيه قوس قزح</div>
-        <div class="product-desc">خليط من أجمل الألوان في تصميم احترافي وفاخر</div>
-        <div class="product-footer">
-          <div class="product-price">٥٠٠ جنيه <span>/ بوكيه</span></div>
-<button class="add-btn" onclick="addToCart(6, this)">+</button>        </div>
-      </div>
-    </div>
-
+  <div class="products-grid" id="productsGrid">
+    <!-- سيتم تحميل المنتجات هنا ديناميكياً -->
   </div>
 </section>
 
@@ -1049,6 +984,19 @@
 
 <script>
 
+// خريطة الألوان للأيقونات
+const productColorMap = {
+  'أحمر': { icon: '🌹', class: 'product-img-bg-pink' },
+  'زهري': { icon: '🌸', class: 'product-img-bg-red' },
+  'بنفسجي': { icon: '💜', class: 'product-img-bg-purple' },
+  'أصفر': { icon: '🌻', class: 'product-img-bg-yellow' },
+  'أبيض': { icon: '🤍', class: 'product-img-bg-white' },
+  'مزيج': { icon: '💐', class: 'product-img-bg-mixed' },
+};
+
+let allProducts = [];
+let productCatalog = {};
+
 function filterTab(el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
@@ -1078,21 +1026,10 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 
-document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
 const bouquetOptions = {
   flowerShapes: ['دائري', 'طولي', 'مفتوح', 'كلاسيكي'],
   bouquetColors: ['أحمر', 'زهري', 'أبيض', 'بنفسجي', 'مزيج'],
   wrapColors: ['ورقي', 'ذهبي', 'وردي', 'أخضر', 'أسود'],
-};
-
-const productCatalog = {
-  1: 'بوكيه الورد الأحمر الكلاسيكي',
-  2: 'بوكيه البيبي روز',
-  3: 'بوكيه اللافندر الملكي',
-  4: 'بوكيه السنفلور والورد',
-  5: 'بوكيه الفرح الأبيض',
-  6: 'بوكيه قوس قزح',
 };
 
 let selectedProductId = null;
@@ -1102,15 +1039,21 @@ function populateOptionSelects() {
   const bouquetColorSelect = document.getElementById('bouquetColorSelect');
   const wrapColorSelect = document.getElementById('wrapColorSelect');
 
-  bouquetOptions.flowerShapes.forEach(shape => {
-    flowerShapeSelect.insertAdjacentHTML('beforeend', `<option value="${shape}">${shape}</option>`);
-  });
-  bouquetOptions.bouquetColors.forEach(color => {
-    bouquetColorSelect.insertAdjacentHTML('beforeend', `<option value="${color}">${color}</option>`);
-  });
-  bouquetOptions.wrapColors.forEach(color => {
-    wrapColorSelect.insertAdjacentHTML('beforeend', `<option value="${color}">${color}</option>`);
-  });
+  if (flowerShapeSelect.children.length === 0) {
+    bouquetOptions.flowerShapes.forEach(shape => {
+      flowerShapeSelect.insertAdjacentHTML('beforeend', `<option value="${shape}">${shape}</option>`);
+    });
+  }
+  if (bouquetColorSelect.children.length === 0) {
+    bouquetOptions.bouquetColors.forEach(color => {
+      bouquetColorSelect.insertAdjacentHTML('beforeend', `<option value="${color}">${color}</option>`);
+    });
+  }
+  if (wrapColorSelect.children.length === 0) {
+    bouquetOptions.wrapColors.forEach(color => {
+      wrapColorSelect.insertAdjacentHTML('beforeend', `<option value="${color}">${color}</option>`);
+    });
+  }
 }
 
 function addToCart(productId, btn) {
@@ -1162,17 +1105,82 @@ function showToast(message) {
 
 /* ✅ تحديث عداد السلة */
 async function updateCartCount() {
-  const res = await fetch("http://localhost:3000/cart");
-  const data = await res.json();
-  const count = data.reduce((sum, item) => sum + (item.qty || 1), 0);
-  document.getElementById("cartCount").textContent = count;
+  try {
+    const res = await fetch("http://localhost:3000/cart");
+    const data = await res.json();
+    const count = data.reduce((sum, item) => sum + (item.qty || 1), 0);
+    document.getElementById("cartCount").textContent = count;
+  } catch (err) {
+    console.error('Error updating cart:', err);
+  }
+}
+
+/* ✅ جلب المنتجات من API */
+async function loadProducts() {
+  try {
+    const res = await fetch("http://localhost:3000/api/products");
+    const products = await res.json();
+    allProducts = products;
+    
+    // بناء catalogCatalog
+    productCatalog = {};
+    products.forEach(p => {
+      productCatalog[p.id] = p.name;
+    });
+    
+    renderProducts(products);
+  } catch (err) {
+    console.error('Error loading products:', err);
+    showToast('خطأ في تحميل المنتجات');
+  }
+}
+
+/* ✅ عرض المنتجات بشكل ديناميكي */
+function renderProducts(products) {
+  const grid = document.getElementById('productsGrid');
+  
+  if (!products || products.length === 0) {
+    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-mid);">لا توجد منتجات حالياً</div>';
+    return;
+  }
+
+  grid.innerHTML = products.map(product => {
+    const colorInfo = productColorMap[product.bg?.replace('bg-', '')] || productColorMap['مزيج'];
+    return `
+      <div class="product-card fade-up">
+        ${product.tag ? `<span class="product-badge" style="background:${product.tag === 'Premium' ? 'var(--gold)' : 'var(--green)'}">${product.tag}</span>` : ''}
+        <div class="product-img ${colorInfo.class}">${product.icon || '🌹'}</div>
+        <div class="product-info">
+          <div class="product-name">${product.name}</div>
+          <div class="product-desc">${product.sub || 'منتج مميز'}</div>
+          <div class="product-footer">
+            <div class="product-price">${product.price} جنيه <span>/ بوكيه</span></div>
+            <button class="add-btn" onclick="addToCart(${product.id}, this)">+</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // إعادة تطبيق الـ observer على البطاقات الجديدة
+  document.querySelectorAll('.fade-up').forEach(el => {
+    observer.observe(el);
+  });
+}
+
+/* ✅ تحديث المنتجات كل 15 ثانية */
+function startProductPolling() {
+  loadProducts(); // تحميل مباشر في البداية
+  setInterval(loadProducts, 15000); // تحديث كل 15 ثانية
 }
 
 /* ✅ أول ما الصفحة تفتح */
-window.onload = () => {
+window.addEventListener('load', () => {
   populateOptionSelects();
   updateCartCount();
-};
+  startProductPolling();
+});
+
 function openCart() {
   window.location.href = "http://localhost:3000/cart-page";
 }

@@ -693,6 +693,85 @@
     to { transform: translateY(0); opacity: 1; }
   }
 
+  /* PAYMENT METHODS */
+  .checkout-step {
+    animation: fadeIn 0.3s ease;
+  }
+
+  .payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .payment-option {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .payment-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .payment-option input[type="radio"]:checked + label {
+    border-color: var(--rose);
+    background: rgba(192, 82, 106, 0.05);
+  }
+
+  .payment-option label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .payment-option label:hover {
+    border-color: var(--rose);
+    background: rgba(192, 82, 106, 0.02);
+  }
+
+  .payment-icon {
+    font-size: 2.5rem;
+  }
+
+  .payment-title {
+    font-weight: 700;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+  }
+
+  .payment-desc {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 0.3rem;
+  }
+
+  .modal-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .modal-buttons .btn {
+    flex: 1;
+    padding: 0.8rem;
+  }
+
+  .cancel-btn {
+    background: var(--text-mid);
+  }
+
+  .cancel-btn:hover {
+    background: var(--text-dark);
+  }
+
   .wa-btn {
     width: 100%;
     height: 44px;
@@ -984,52 +1063,92 @@
   <div class="modal-content">
     <h3>إتمام الطلب</h3>
     
-    <form id="checkoutForm">
-      <div class="form-group">
-        <label for="customerName">الاسم كاملا *</label>
-        <input type="text" id="customerName" required>
-      </div>
+    <!-- Step 1: Customer Info -->
+    <div id="step1" class="checkout-step">
+      <form id="checkoutForm">
+        <div class="form-group">
+          <label for="customerName">الاسم كاملا *</label>
+          <input type="text" id="customerName" required>
+        </div>
 
-      <div class="form-group">
-        <label for="customerEmail">البريد الإلكتروني *</label>
-        <input type="email" id="customerEmail" required>
-      </div>
+        <div class="form-group">
+          <label for="customerEmail">البريد الإلكتروني *</label>
+          <input type="email" id="customerEmail" required>
+        </div>
 
-      <div class="form-group">
-        <label for="customerPhone">رقم الهاتف *</label>
-        <input type="tel" id="customerPhone" placeholder="01XXXXXXXXX" required>
-      </div>
+        <div class="form-group">
+          <label for="customerPhone">رقم الهاتف *</label>
+          <input type="tel" id="customerPhone" placeholder="01XXXXXXXXX" required>
+        </div>
 
-      <div class="form-group">
-        <label for="deliveryAddress">عنوان التوصيل *</label>
-        <textarea id="deliveryAddress" placeholder="الحي - الشارع - رقم البناء - الملاحظات" required></textarea>
-      </div>
+        <div class="form-group">
+          <label for="deliveryAddress">عنوان التوصيل *</label>
+          <textarea id="deliveryAddress" placeholder="الحي - الشارع - رقم البناء - الملاحظات" required></textarea>
+        </div>
 
-      <div class="form-group">
-        <label for="specialNotes">ملاحظات إضافية</label>
-        <textarea id="specialNotes" placeholder="أي طلبات خاصة أو ملاحظات..."></textarea>
+        <div class="form-group">
+          <label for="specialNotes">ملاحظات إضافية</label>
+          <textarea id="specialNotes" placeholder="أي طلبات خاصة أو ملاحظات..."></textarea>
+        </div>
+
+        <div class="checkout-summary">
+          <div class="summary-row">
+            <span>السعر:</span>
+            <span id="modalSubtotal">0 ج.م</span>
+          </div>
+          <div class="summary-row">
+            <span>التوصيل:</span>
+            <span id="modalShipping">50 ج.م</span>
+          </div>
+          <div class="summary-row total">
+            <span>الإجمالي:</span>
+            <span id="modalTotal">0 ج.م</span>
+          </div>
+        </div>
+
+        <div class="modal-buttons">
+          <button type="button" class="btn cancel-btn" onclick="closeCheckoutModal()">إلغاء</button>
+          <button type="button" class="btn" id="nextPaymentBtn" style="background: var(--rose);" onclick="goToPaymentStep()">التالي</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Step 2: Payment Method -->
+    <div id="step2" class="checkout-step" style="display: none;">
+      <h4>اختر طريقة الدفع</h4>
+      
+      <div class="payment-methods">
+        <div class="payment-option" onclick="selectPayment('cash')">
+          <input type="radio" id="paymentCash" name="paymentMethod" value="cash" checked>
+          <label for="paymentCash">
+            <div class="payment-icon">💵</div>
+            <div class="payment-title">الدفع عند الاستلام</div>
+            <div class="payment-desc">ادفع عند استلام الطلب</div>
+          </label>
+        </div>
+
+        <div class="payment-option" onclick="selectPayment('online')">
+          <input type="radio" id="paymentOnline" name="paymentMethod" value="online">
+          <label for="paymentOnline">
+            <div class="payment-icon">💳</div>
+            <div class="payment-title">الدفع أونلاين</div>
+            <div class="payment-desc">ادفع الآن ببطاقتك البنكية</div>
+          </label>
+        </div>
       </div>
 
       <div class="checkout-summary">
         <div class="summary-row">
-          <span>السعر:</span>
-          <span id="modalSubtotal">0 ج.م</span>
-        </div>
-        <div class="summary-row">
-          <span>التوصيل:</span>
-          <span id="modalShipping">50 ج.م</span>
-        </div>
-        <div class="summary-row total">
           <span>الإجمالي:</span>
-          <span id="modalTotal">0 ج.م</span>
+          <span id="paymentTotal">0 ج.م</span>
         </div>
       </div>
 
       <div class="modal-buttons">
-        <button type="button" class="btn cancel-btn" onclick="closeCheckoutModal()">إلغاء</button>
+        <button type="button" class="btn cancel-btn" onclick="backToCustomerStep()">رجوع</button>
         <button type="button" class="btn" id="submitOrderBtn" style="background: var(--rose);" onclick="submitOrder()">تأكيد الطلب</button>
       </div>
-    </form>
+    </div>
   </div>
 </div>
 
@@ -1301,12 +1420,41 @@ document.addEventListener('click', (e) => {
   }
 });
 
+function goToPaymentStep() {
+  const customerName = document.getElementById('customerName').value.trim();
+  const customerEmail = document.getElementById('customerEmail').value.trim();
+  const customerPhone = document.getElementById('customerPhone').value.trim();
+  const deliveryAddress = document.getElementById('deliveryAddress').value.trim();
+
+  if (!customerName || !customerEmail || !customerPhone || !deliveryAddress) {
+    showToast('يرجى ملء جميع الحقول المطلوبة');
+    return;
+  }
+
+  // Show payment step
+  document.getElementById('step1').style.display = 'none';
+  document.getElementById('step2').style.display = 'block';
+  
+  // Update total in payment step
+  document.getElementById('paymentTotal').textContent = document.getElementById('modalTotal').textContent;
+}
+
+function backToCustomerStep() {
+  document.getElementById('step1').style.display = 'block';
+  document.getElementById('step2').style.display = 'none';
+}
+
+function selectPayment(method) {
+  document.getElementById('payment' + (method === 'cash' ? 'Cash' : 'Online')).checked = true;
+}
+
 async function submitOrder() {
   const customerName = document.getElementById('customerName').value.trim();
   const customerEmail = document.getElementById('customerEmail').value.trim();
   const customerPhone = document.getElementById('customerPhone').value.trim();
   const deliveryAddress = document.getElementById('deliveryAddress').value.trim();
   const specialNotes = document.getElementById('specialNotes').value.trim();
+  const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
 
   if (!customerName || !customerEmail || !customerPhone || !deliveryAddress) {
     showToast('يرجى ملء جميع الحقول المطلوبة');
@@ -1326,6 +1474,7 @@ async function submitOrder() {
         customerPhone,
         deliveryAddress,
         specialNotes,
+        paymentMethod,
         items: cart,
         totalPrice: calculateTotal()
       })

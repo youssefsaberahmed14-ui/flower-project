@@ -507,26 +507,27 @@
         }
 
         function updateStats(data) {
+            const completedPercent = data.totalOrders > 0 ? ((data.completedOrders / data.totalOrders) * 100).toFixed(1) : '0.0';
             const statsHtml = `
                 <div class="stat-card">
                     <div class="stat-label">Total Sales</div>
-                    <div class="stat-value">$${data.totalSales.toLocaleString()}</div>
-                    <div class="stat-change positive">↑ ${data.salesGrowth}% vs last period</div>
+                    <div class="stat-value">$${(data.totalSales || 0).toLocaleString()}</div>
+                    <div class="stat-change positive">↑ ${data.salesGrowth || 0}% vs last period</div>
                 </div>
                 <div class="stat-card gold">
                     <div class="stat-label">Total Orders</div>
-                    <div class="stat-value">${data.totalOrders}</div>
-                    <div class="stat-change positive">↑ ${data.ordersGrowth}% new orders</div>
+                    <div class="stat-value">${data.totalOrders || 0}</div>
+                    <div class="stat-change positive">↑ ${data.ordersGrowth || 0}% new orders</div>
                 </div>
                 <div class="stat-card green">
                     <div class="stat-label">Average Order Value</div>
-                    <div class="stat-value">$${data.averageOrderValue.toLocaleString()}</div>
-                    <div class="stat-change">from ${data.totalOrders} orders</div>
+                    <div class="stat-value">$${(data.averageOrderValue || 0).toLocaleString()}</div>
+                    <div class="stat-change">from ${data.totalOrders || 0} orders</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Completed Orders</div>
-                    <div class="stat-value">${data.completedOrders}</div>
-                    <div class="stat-change">${((data.completedOrders / data.totalOrders) * 100).toFixed(1)}% of all orders</div>
+                    <div class="stat-value">${data.completedOrders || 0}</div>
+                    <div class="stat-change">${completedPercent}% of all orders</div>
                 </div>
             `;
             document.getElementById('stats').innerHTML = statsHtml;
@@ -700,26 +701,35 @@
         }
 
         function updateOrdersTable(orders) {
-            if (orders.length === 0) {
+            if (!orders || orders.length === 0) {
                 document.getElementById('ordersBody').innerHTML = '<tr><td colspan="6" style="text-align: center;">No orders found</td></tr>';
                 return;
             }
 
             const tbody = document.getElementById('ordersBody');
-            tbody.innerHTML = orders.map(order => `
-                <tr>
-                    <td>#${order.id}</td>
-                    <td>${order.date}</td>
-                    <td>${order.product}</td>
-                    <td>${order.quantity}</td>
-                    <td>$${order.price.toLocaleString()}</td>
-                    <td>
-                        <span class="status-badge status-${order.status}">
-                            ${order.statusLabel}
-                        </span>
-                    </td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = orders.map(order => {
+                const orderDate = order.orderDate ? new Date(order.orderDate).toLocaleDateString('ar-EG') : '—';
+                const items = Array.isArray(order.items) ? order.items : [];
+                const productName = items.length > 0 ? (items[0].name || items[0].productName || 'Ordered item') : 'N/A';
+                const quantity = items.length > 0 ? items.reduce((sum, item) => sum + (item.qty || item.quantity || 1), 0) : 0;
+                const priceValue = order.totalPrice || order.price || 0;
+                const statusLabel = order.statusLabel || order.status || 'Pending';
+
+                return `
+                    <tr>
+                        <td>#${order.id}</td>
+                        <td>${orderDate}</td>
+                        <td>${productName}</td>
+                        <td>${quantity}</td>
+                        <td>$${priceValue.toLocaleString()}</td>
+                        <td>
+                            <span class="status-badge status-${order.status || 'pending'}">
+                                ${statusLabel}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function applyFilters() {

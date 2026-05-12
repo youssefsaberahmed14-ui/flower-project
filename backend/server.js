@@ -191,7 +191,7 @@ app.get("/api/dashboard", (req, res) => {
 
 // API - Create order (from cart)
 app.post("/api/orders", (req, res) => {
-  const { customerName, customerEmail, customerPhone, deliveryAddress, specialNotes, items, totalPrice } = req.body;
+  const { customerName, customerEmail, customerPhone, deliveryAddress, specialNotes, paymentMethod, items, totalPrice } = req.body;
   const newOrder = {
     id: ++orderIdCounter,
     orderDate: new Date().toISOString(),
@@ -200,10 +200,11 @@ app.post("/api/orders", (req, res) => {
     customerPhone,
     deliveryAddress,
     specialNotes,
+    paymentMethod: paymentMethod || 'cash',
     items,
     totalPrice,
-    status: 'pending',
-    statusLabel: 'Pending'
+    status: paymentMethod === 'online' ? 'pending_payment' : 'pending',
+    statusLabel: paymentMethod === 'online' ? 'Pending Payment' : 'Pending'
   };
   orders.push(newOrder);
 
@@ -307,6 +308,7 @@ app.get("/dashboard", (req, res) => {
 });
 
 // Static files middleware (after all API and HTML routes)
+app.use('/static', express.static(path.join(__dirname, '..')));
 app.use(express.static(__dirname));
 
 app.listen(3000, () => {

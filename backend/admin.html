@@ -590,13 +590,14 @@
                                 <th>Customer</th>
                                 <th>Email</th>
                                 <th>Total</th>
+                                <th>Payment</th>
                                 <th>Status</th>
                                 <th>Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="ordersBody">
-                            <tr><td colspan="7" class="no-data">No orders yet</td></tr>
+                            <tr><td colspan="8" class="no-data">No orders yet</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -928,16 +929,19 @@
                 
                 let html = '';
                 if (orders.length === 0) {
-                    html = '<tr><td colspan="7" class="no-data">No orders yet</td></tr>';
+                    html = '<tr><td colspan="8" class="no-data">No orders yet</td></tr>';
                 } else {
                     orders.forEach(o => {
                         const orderDate = new Date(o.orderDate).toLocaleDateString();
+                        const paymentMethod = o.paymentMethod === 'online' ? 'Online' : 'Cash';
+                        const paymentIcon = o.paymentMethod === 'online' ? '💳' : '💵';
                         html += `
                             <tr>
                                 <td>#${o.id}</td>
                                 <td>${o.customerName}</td>
                                 <td>${o.customerEmail}</td>
                                 <td>$${o.totalPrice}</td>
+                                <td>${paymentIcon} ${paymentMethod}</td>
                                 <td><span class="status-badge status-${o.status}">${o.statusLabel}</span></td>
                                 <td>${orderDate}</td>
                                 <td>
